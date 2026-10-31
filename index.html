@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="auto">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#EFEEE8">
+<title>ORBIT · 选题星球</title>
+<style>
+:root{
+  --bg:#EFEFED;
+  --surface:#FFFFFF;
+  --surface-2:#E6E6E3;
+  --surface-3:#D9D9D5;
+  --line:rgba(17,17,19,.09);
+  --line-strong:rgba(17,17,19,.18);
+  --ink:#111113;
+  --text:#111113;
+  --text-2:#65655F;
+  --text-3:#97978F;
+  --on-color:#111111;
+  --danger:#FF3B30;
+  --danger-soft:#FFE6E4;
+  --accent:#2F5BFF;
+  --accent-soft:#DFE6FF;
+  --shadow-s:0 1px 2px rgba(17,17,17,.05);
+  --shadow-m:0 10px 26px -10px rgba(17,17,17,.16);
+  --shadow-l:0 30px 70px -24px rgba(17,17,17,.3);
+  --r-s:10px; --r-m:14px; --r-l:22px; --r-xl:28px; --r-pill:999px;
+  --ease:cubic-bezier(.22,.72,.26,1);
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  /* 纯色相，高明度：有对比但不发褐 */
+  --k-blue:#2F5BFF;   --s-blue:#DEE5FF;
+  --k-orange:#FF6B2C; --s-orange:#FFE3D4;
+  --k-yellow:#FFD400; --s-yellow:#FFF3BE;
+  --k-green:#00C27A;  --s-green:#CDF3E3;
+  --k-purple:#7A5CFF; --s-purple:#E5DFFF;
+  --k-pink:#FF4F9A;   --s-pink:#FFDBEA;
+  --k-cyan:#00C2E0;   --s-cyan:#CFF2F9;
+  --k-ink:#111113;    --s-ink:#E4E4E0;
+}
+html[data-theme="dark"]{
+  --bg:#0E0E10;
+  --surface:#171719;
+  --surface-2:#202024;
+  --surface-3:#2B2B30;
+  --line:rgba(255,255,255,.09);
+  --line-strong:rgba(255,255,255,.18);
+  --ink:#F5F5F2;
+  --text:#F5F5F2;
+  --text-2:#989893;
+  --text-3:#6A6A66;
+  --on-color:#111111;
+  --danger:#FF5F57;
+  --danger-soft:#2E1513;
+  --accent:#5C7BFF;
+  --accent-soft:#1A1F3D;
+  --shadow-s:0 1px 2px rgba(0,0,0,.5);
+  --shadow-m:0 10px 26px -10px rgba(0,0,0,.7);
+  --shadow-l:0 30px 70px -24px rgba(0,0,0,.85);
+  --k-blue:#6E8BFF;   --s-blue:#1A2147;
+  --k-orange:#FF8A4D; --s-orange:#36200F;
+  --k-yellow:#FFD84D; --s-yellow:#352C0A;
+  --k-green:#2DD398;  --s-green:#0D3326;
+  --k-purple:#9B84FF; --s-purple:#231C47;
+  --k-pink:#FF74AF;   --s-pink:#361827;
+  --k-cyan:#3ACFE8;   --s-cyan:#0C2F37;
+  --k-ink:#F5F5F2;    --s-ink:#242427;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;transition:background .4s var(--ease),color .4s var(--ease)}
+button,input,textarea,select{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer;padding:0}
+input,textarea{background:none;border:0;outline:0}
+::selection{background:var(--k-yellow);color:#111}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+.mono{font-family:var(--mono);font-size:10.5px;letter-spacing:.17em;text-transform:uppercase;color:var(--text-3)}
+
+.app{display:flex;min-height:100vh}
+.sidebar{width:248px;flex:none;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;
+  background:var(--bg);border-right:1px solid var(--line);z-index:40}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+
+/* ---- logo ---- */
+.brand{padding:20px 18px 16px;display:flex;align-items:center;gap:11px}
+.logo-mark{width:34px;height:34px;flex:none}
+.logo-type{display:flex;flex-direction:column;gap:2px}
+.logo-word{
+  font-size:19px;font-weight:800;letter-spacing:-.045em;line-height:1;color:var(--ink);
+  display:flex;align-items:baseline;gap:1px;
+}
+.logo-word em{font-style:normal;color:var(--k-blue)}
+.logo-sub{font-family:var(--mono);font-size:8.5px;letter-spacing:.24em;color:var(--text-3)}
+
+.side-scroll{flex:1;overflow-y:auto;padding:4px 12px 12px}
+.side-head{display:flex;align-items:center;justify-content:space-between;padding:10px 8px 6px}
+.cat-list{display:flex;flex-direction:column;gap:1px}
+.cat{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r-pill);color:var(--text-2);
+  transition:background .18s var(--ease),color .18s var(--ease);text-align:left;width:100%}
+.cat:hover{background:var(--surface-2);color:var(--text)}
+.cat.active{background:var(--ink);color:var(--bg);font-weight:600}
+.cat-dot{width:9px;height:9px;border-radius:50%;flex:none;transition:transform .2s var(--ease)}
+.cat.active .cat-dot{transform:scale(1.2)}
+.cat-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13.5px}
+.cat-count{font-family:var(--mono);font-size:10px;opacity:.65}
+.cat-del{opacity:0;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;flex:none;margin-right:-4px;
+  transition:opacity .15s,background .15s,color .15s}
+.cat:hover .cat-del{opacity:.75}
+.cat-del:hover{background:var(--danger);color:#fff;opacity:1}
+.cat-rename{flex:1;min-width:0;font-size:13.5px;background:var(--surface);border:1px solid var(--k-blue);
+  border-radius:var(--r-pill);padding:2px 9px;margin:-3px 0;color:var(--text)}
+.add-cat{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;margin-top:6px;
+  border-radius:var(--r-pill);color:var(--text-3);font-size:13px;transition:background .18s,color .18s}
+.add-cat:hover{background:var(--surface-2);color:var(--text-2)}
+.side-hint{padding:4px 10px 0;font-size:11px;color:var(--text-3)}
+.side-foot{padding:12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:9px}
+.theme-switch{display:flex;background:var(--surface-2);border-radius:var(--r-pill);padding:3px;gap:2px}
+.theme-switch button{flex:1;padding:5px 0;border-radius:var(--r-pill);font-size:11.5px;color:var(--text-3);
+  transition:background .22s var(--ease),color .22s var(--ease)}
+.theme-switch button.on{background:var(--ink);color:var(--bg)}
+.io-row{display:flex;gap:6px}
+.io-row button{flex:1;padding:7px 0;border-radius:var(--r-pill);font-size:12px;color:var(--text-2);
+  background:var(--surface-2);transition:background .18s,color .18s}
+.io-row button:hover{background:var(--surface-3);color:var(--text)}
+.save-note{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-3);padding:0 4px}
+.save-dot{width:6px;height:6px;border-radius:50%;background:var(--k-green);flex:none}
+.save-note button{color:var(--text-3);text-decoration:underline;text-underline-offset:2px;font-size:11px}
+
+/* ---- topbar ---- */
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;padding:14px clamp(20px,3.2vw,56px);
+  background:color-mix(in srgb,var(--bg) 84%,transparent);backdrop-filter:saturate(1.7) blur(14px);
+  -webkit-backdrop-filter:saturate(1.7) blur(14px);border-bottom:1px solid transparent;transition:border-color .3s}
+.topbar.scrolled{border-bottom-color:var(--line)}
+.menu-btn{display:none;width:36px;height:36px;border-radius:50%;place-items:center;color:var(--text-2);background:var(--surface-2)}
+.search{flex:1;max-width:440px;display:flex;align-items:center;gap:9px;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r-pill);padding:0 15px;height:40px;
+  transition:border-color .2s,box-shadow .2s}
+.search:focus-within{border-color:var(--ink);box-shadow:0 0 0 3px var(--s-blue)}
+.search svg{flex:none;color:var(--text-3)}
+.search input{flex:1;min-width:0;font-size:13.5px}
+.kbd{font-family:var(--mono);font-size:10px;color:var(--text-3);border:1px solid var(--line);
+  border-radius:6px;padding:2px 5px}
+.search:focus-within .kbd{opacity:0}
+.search-clear{width:20px;height:20px;border-radius:50%;display:none;place-items:center;color:var(--text-3)}
+.search-clear:hover{background:var(--surface-2);color:var(--text)}
+.spacer{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:40px;padding:0 17px;
+  border-radius:var(--r-pill);font-size:13px;font-weight:600;white-space:nowrap;
+  transition:background .2s var(--ease),color .2s,transform .12s var(--ease),box-shadow .2s,border-color .2s,opacity .2s}
+.btn:active{transform:scale(.97)}
+.btn[disabled]{opacity:.5;pointer-events:none}
+.btn-ghost{color:var(--text-2);background:var(--surface-2)}
+.btn-ghost:hover{background:var(--surface-3);color:var(--text)}
+.btn-line{color:var(--text);border:1.5px solid var(--ink);background:transparent}
+.btn-line:hover{background:var(--ink);color:var(--bg)}
+.btn-primary{background:var(--ink);color:var(--bg)}
+.btn-primary:hover{opacity:.86}
+.btn-blue{background:var(--k-blue);color:#fff}
+.btn-blue:hover{opacity:.88}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-danger:hover{opacity:.88}
+.btn-sm{height:34px;padding:0 14px;font-size:12.5px}
+
+.content{flex:1;width:100%;max-width:1680px;margin:0 auto;padding:24px clamp(24px,3.2vw,56px) 120px}
+
+/* ---- 马赛克控制区 ---- */
+.mosaic{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:clamp(88px,8.2vw,112px);gap:12px;margin-bottom:30px}
+.tile{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;
+  padding:16px 18px;text-align:left;transition:transform .3s var(--ease),box-shadow .3s var(--ease),outline-color .2s;
+  outline:2px solid transparent;outline-offset:2px}
+.tile.active{outline-color:var(--ink)}
+button.tile:hover{transform:translateY(-3px);box-shadow:var(--shadow-m)}
+.tile .mono{font-size:9.5px}
+.tile-new{grid-column:span 3;grid-row:span 2;background:var(--k-blue);color:#fff;border-radius:var(--r-xl)}
+.tile-new .mono{color:rgba(255,255,255,.72)}
+.tile-new b{font-size:30px;font-weight:800;letter-spacing:-.04em;line-height:1.05}
+.tile-new .arrow{position:absolute;right:18px;bottom:16px;width:40px;height:40px;border-radius:50%;
+  background:#fff;color:var(--k-blue);display:grid;place-items:center;transition:transform .3s var(--ease)}
+.tile-new:hover .arrow{transform:translate(3px,-3px)}
+.tile-ai{grid-column:span 1;grid-row:span 2;background:var(--k-yellow);color:#111;border-radius:var(--r-pill);
+  align-items:center;justify-content:center;gap:10px;text-align:center}
+.tile-ai .sparkle{width:36px;height:36px;border-radius:50%;background:#111;color:var(--k-yellow);display:grid;place-items:center;
+  transition:transform .35s var(--ease)}
+.tile-ai:hover .sparkle{transform:rotate(90deg) scale(1.06)}
+.tile-ai b{font-size:14px;font-weight:700;letter-spacing:-.01em}
+.tile-stat{grid-column:span 2;background:var(--surface);border-radius:var(--r-pill);justify-content:center;gap:2px;align-items:flex-start;padding-left:24px}
+.tile-stat b{font-size:22px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.tile-round{grid-column:span 1;grid-row:span 2;background:var(--k-pink);color:#111;
+  border-radius:50%;align-items:center;justify-content:center;text-align:center;gap:3px;padding:8px}
+.tile-done{grid-column:span 2;background:var(--ink);color:var(--bg);border-radius:var(--r-l);justify-content:center;gap:3px}
+.tile-done .mono{color:rgba(255,255,255,.5)}
+html[data-theme="dark"] .tile-done .mono{color:rgba(0,0,0,.45)}
+.tile-done b{font-size:22px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.tile-bar{display:flex;gap:3px;margin-top:8px;height:5px}
+.tile-bar i{display:block;border-radius:99px;height:5px}
+
+/* ---- 页头 ---- */
+.page-head{margin-bottom:22px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.page-head h1{font-size:46px;line-height:1;font-weight:800;letter-spacing:-.045em;margin:8px 0 0}
+.head-label{display:flex;align-items:center;gap:8px}
+.head-label .cat-dot{width:8px;height:8px}
+.page-head p{margin:0 0 5px;color:var(--text-2);font-size:13.5px;max-width:40ch}
+
+.onboard{position:relative;display:flex;gap:18px;align-items:flex-start;background:var(--k-yellow);color:#111;
+  border-radius:var(--r-xl);padding:24px 26px;margin-bottom:24px;animation:rise .5s var(--ease) both}
+.onboard-ico{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;background:#111;color:var(--k-yellow)}
+.onboard h3{margin:0 0 5px;font-size:16px;font-weight:750;letter-spacing:-.02em}
+.onboard p{margin:0 0 12px;font-size:13px;max-width:62ch;opacity:.78}
+.onboard ol{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px 18px}
+.onboard li{display:flex;align-items:center;gap:7px;font-size:12.5px}
+.onboard li i{font-style:normal;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(0,0,0,.15);color:#111;font-family:var(--mono);font-size:9px}
+.x-btn{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:currentColor;flex:none;
+  transition:background .15s}
+.x-btn:hover{background:var(--surface-2)}
+.onboard .x-btn{position:absolute;top:14px;right:14px}
+.onboard .x-btn:hover{background:rgba(0,0,0,.12)}
+
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.segmented{display:flex;gap:3px;background:var(--surface-2);border-radius:var(--r-pill);padding:3px}
+.segmented button{padding:7px 15px;border-radius:var(--r-pill);font-size:12.5px;color:var(--text-2);white-space:nowrap;
+  transition:background .22s var(--ease),color .22s var(--ease)}
+.segmented button:hover{color:var(--text)}
+.segmented button.on{background:var(--ink);color:var(--bg);font-weight:600}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.select-wrap{position:relative;display:flex;align-items:center}
+.select-wrap select{appearance:none;background:var(--surface-2);border-radius:var(--r-pill);height:34px;
+  padding:0 30px 0 14px;font-size:12.5px;color:var(--text-2);cursor:pointer;border:0}
+.select-wrap svg{position:absolute;right:11px;pointer-events:none;color:var(--text-3)}
+.meta-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+
+/* ---- 卡片 ---- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{position:relative;overflow:hidden;text-align:left;display:flex;flex-direction:column;gap:10px;
+  background:var(--surface);border-radius:var(--r-xl);padding:21px;min-height:190px;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease);animation:rise .46s var(--ease) both}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-m)}
+.card.picked{box-shadow:0 0 0 2.5px var(--k-blue)}
+.card-shape{position:absolute;top:16px;right:16px;width:44px;height:44px;opacity:.95;pointer-events:none;
+  transition:transform .45s var(--ease)}
+.card:hover .card-shape{transform:rotate(-14deg) scale(1.08)}
+.card.selmode .card-shape{display:none}
+.card-idx{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--text-3)}
+.card h3{margin:0;font-size:17px;font-weight:750;line-height:1.34;letter-spacing:-.025em;padding-right:52px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card p{margin:0;font-size:12.8px;color:var(--text-2);line-height:1.6;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 11px;border-radius:var(--r-pill);
+  font-size:11px;font-weight:600;white-space:nowrap}
+.chip .cat-dot{width:6px;height:6px}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
+.tag{font-size:11px;color:var(--text-2);background:var(--surface-2);border-radius:var(--r-pill);padding:3px 9px;line-height:1.5}
+.card-foot{display:flex;align-items:center;gap:8px;padding-top:12px;border-top:1px solid var(--line);
+  font-size:11px;color:var(--text-3)}
+.dot-sep{width:2.5px;height:2.5px;border-radius:50%;background:currentColor;opacity:.5}
+.pri{margin-left:auto;display:flex;gap:3px;align-items:center}
+.pri i{width:4px;height:4px;border-radius:50%;background:var(--line-strong);display:block}
+.pri i.on{background:var(--ink)}
+.pick-box{position:absolute;top:16px;right:16px;width:22px;height:22px;border-radius:50%;
+  border:1.5px solid var(--line-strong);background:var(--surface);display:grid;place-items:center;color:transparent;
+  transition:background .18s,border-color .18s,color .18s}
+.card.picked .pick-box{background:var(--k-blue);border-color:var(--k-blue);color:#fff}
+
+.empty{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  padding:72px 24px;text-align:center;border:1.5px dashed var(--line-strong);border-radius:var(--r-xl);
+  animation:fade .4s var(--ease) both}
+.empty-ico{width:52px;height:52px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;
+  color:var(--text-3);margin-bottom:8px}
+.empty h3{margin:0;font-size:16px;font-weight:700;letter-spacing:-.02em}
+.empty p{margin:0 0 14px;color:var(--text-2);font-size:13px}
+
+.bulkbar{position:fixed;left:50%;bottom:26px;transform:translate(-50%,130%);z-index:50;display:flex;align-items:center;
+  gap:9px;padding:9px 10px 9px 20px;background:var(--ink);color:var(--bg);border-radius:var(--r-pill);
+  box-shadow:var(--shadow-l);transition:transform .42s var(--ease),opacity .3s;opacity:0;pointer-events:none}
+.bulkbar.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.bulkbar span{font-size:13px}
+.bulkbar .btn{height:32px;font-size:12.5px;padding:0 13px}
+.bulkbar .btn-ghost{background:rgba(255,255,255,.16);color:var(--bg)}
+html[data-theme="dark"] .bulkbar .btn-ghost{background:rgba(0,0,0,.18)}
+
+/* ---- drawer / modal ---- */
+.scrim{position:fixed;inset:0;z-index:60;background:rgba(17,17,17,.3);backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .34s var(--ease)}
+.scrim.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(530px,100%);z-index:70;background:var(--surface);
+  box-shadow:var(--shadow-l);transform:translateX(102%);transition:transform .42s var(--ease);display:flex;flex-direction:column}
+.drawer.show{transform:none}
+.drawer-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.drawer-head .mono{flex:1}
+.drawer-body{flex:1;overflow-y:auto;padding:20px 22px 40px}
+.title-input{width:100%;font-size:25px;font-weight:780;letter-spacing:-.035em;line-height:1.26;resize:none;
+  overflow:hidden;margin-bottom:18px}
+.title-input::placeholder{color:var(--text-3)}
+.field{margin-bottom:18px}
+.field > label{display:block;font-size:11.5px;color:var(--text-3);margin-bottom:7px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ctrl{width:100%;background:var(--surface-2);border:1.5px solid transparent;border-radius:var(--r-m);padding:10px 12px;
+  font-size:13px;transition:background .18s,border-color .18s}
+.ctrl:focus{background:var(--surface);border-color:var(--ink)}
+select.ctrl{appearance:none;cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 50%,var(--text-3) 50%),linear-gradient(135deg,var(--text-3) 50%,transparent 50%);
+  background-position:calc(100% - 16px) 18px,calc(100% - 11px) 18px;background-size:5px 5px,5px 5px;
+  background-repeat:no-repeat;padding-right:32px}
+textarea.ctrl{resize:vertical;min-height:130px;line-height:1.72}
+.seg-sm{display:flex;gap:3px;background:var(--surface-2);border-radius:var(--r-pill);padding:3px}
+.seg-sm button{flex:1;padding:7px 0;border-radius:var(--r-pill);font-size:12px;color:var(--text-2);
+  transition:background .2s var(--ease),color .2s}
+.seg-sm button.on{background:var(--ink);color:var(--bg);font-weight:600}
+.tag-edit{display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--surface-2);
+  border:1.5px solid transparent;border-radius:var(--r-m);padding:8px 10px;transition:background .18s,border-color .18s}
+.tag-edit:focus-within{background:var(--surface);border-color:var(--ink)}
+.tag-edit input{flex:1;min-width:90px;font-size:12.5px;padding:2px 0}
+.tag-pill{display:inline-flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-pill);padding:3px 7px 3px 10px;font-size:11.5px}
+.tag-pill button{color:var(--text-3);display:grid;place-items:center}
+.tag-pill button:hover{color:var(--danger)}
+.block{background:var(--surface-2);border-radius:var(--r-m);padding:12px;margin-bottom:9px}
+.block-head{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.block-head input{flex:1;font-size:12.5px;font-weight:650}
+.block textarea{width:100%;resize:vertical;min-height:62px;font-size:12.5px;color:var(--text-2);line-height:1.68}
+.add-block{width:100%;padding:10px;border-radius:var(--r-m);border:1.5px dashed var(--line-strong);color:var(--text-3);
+  font-size:12.5px;transition:background .18s,color .18s,border-color .18s}
+.add-block:hover{background:var(--surface-2);color:var(--text-2);border-color:var(--text-3)}
+.drawer-foot{display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid var(--line)}
+.drawer-foot .mono{flex:1;font-size:10px}
+
+.modal{position:fixed;z-index:80;left:50%;top:50%;width:min(440px,calc(100% - 28px));
+  transform:translate(-50%,-47%) scale(.97);opacity:0;pointer-events:none;background:var(--surface);
+  border-radius:var(--r-xl);box-shadow:var(--shadow-l);padding:26px;
+  transition:opacity .26s var(--ease),transform .34s var(--ease)}
+.modal.show{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
+.modal.wide{width:min(620px,calc(100% - 28px))}
+.modal h2{margin:10px 0 6px;font-size:23px;font-weight:780;letter-spacing:-.035em;line-height:1.2}
+.modal > p{margin:0 0 18px;color:var(--text-2);font-size:13px}
+.modal-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:20px;flex-wrap:wrap}
+.swatches{display:flex;gap:9px;flex-wrap:wrap}
+.swatch{width:30px;height:30px;border-radius:50%;border:2.5px solid transparent;transition:transform .18s var(--ease)}
+.swatch:hover{transform:scale(1.12)}
+.swatch.on{border-color:var(--ink)}
+.note-list{display:flex;flex-direction:column;gap:13px}
+.note-item{display:flex;gap:11px;align-items:flex-start}
+.note-item .ico{width:30px;height:30px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--surface-2);color:var(--text-2)}
+.note-item strong{display:block;font-size:13px;font-weight:650}
+.note-item span{font-size:12.5px;color:var(--text-2);line-height:1.6}
+
+/* ---- AI 面板 ---- */
+.tabs{display:flex;gap:3px;background:var(--surface-2);border-radius:var(--r-pill);padding:3px;margin-bottom:18px}
+.tabs button{flex:1;padding:8px 0;border-radius:var(--r-pill);font-size:12.5px;color:var(--text-2);
+  transition:background .22s var(--ease),color .22s}
+.tabs button.on{background:var(--ink);color:var(--bg);font-weight:600}
+.pane{display:none}.pane.on{display:block;animation:fade .3s var(--ease) both}
+.kind-row{display:flex;flex-wrap:wrap;gap:6px}
+.kind{padding:7px 13px;border-radius:var(--r-pill);font-size:12.5px;background:var(--surface-2);color:var(--text-2);
+  transition:background .2s,color .2s}
+.kind.on{background:var(--k-blue);color:#fff;font-weight:600}
+.gen-results{margin-top:16px;display:flex;flex-direction:column;gap:7px;max-height:42vh;overflow-y:auto;padding-right:2px}
+.gen-item{display:flex;gap:11px;align-items:flex-start;padding:13px 14px;border-radius:var(--r-l);background:var(--surface-2);
+  border:2px solid transparent;text-align:left;width:100%;transition:border-color .18s,background .18s;
+  animation:rise .4s var(--ease) both}
+.gen-item.on{border-color:var(--k-blue);background:var(--s-blue)}
+.gen-check{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--line-strong);flex:none;display:grid;
+  place-items:center;color:transparent;margin-top:1px;background:var(--surface);transition:background .18s,border-color .18s,color .18s}
+.gen-item.on .gen-check{background:var(--k-blue);border-color:var(--k-blue);color:#fff}
+.gen-item strong{display:block;font-size:13.5px;font-weight:650;margin-bottom:3px;line-height:1.42}
+.gen-item p{margin:0 0 6px;font-size:12px;color:var(--text-2);line-height:1.6}
+.gen-empty{text-align:center;color:var(--text-3);font-size:12.5px;padding:28px 0}
+.spin{width:14px;height:14px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;
+  animation:spin .7s linear infinite;display:inline-block}
+.hintbar{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--text-3);margin-top:10px}
+.hintbar button{color:var(--k-blue);font-weight:600;font-size:11.5px}
+.err{background:var(--danger-soft);color:var(--danger);border-radius:var(--r-m);padding:10px 12px;font-size:12.5px;margin-top:12px}
+
+.toasts{position:fixed;bottom:24px;left:24px;z-index:90;display:flex;flex-direction:column;gap:8px}
+.toast{display:flex;align-items:center;gap:9px;background:var(--ink);color:var(--bg);padding:11px 18px;
+  border-radius:var(--r-pill);font-size:12.5px;box-shadow:var(--shadow-l);animation:toastIn .4s var(--ease) both}
+.toast.out{animation:toastOut .3s var(--ease) both}
+
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes toastIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateY(8px) scale(.97)}}
+
+.sb-scrim{display:none}
+@media(max-width:1080px){
+  .mosaic{grid-template-columns:repeat(4,1fr)}
+  .tile-new{grid-column:span 2}
+  .tile-ai{grid-column:span 1}
+  .tile-round{grid-column:span 1;grid-row:span 2}
+  .tile-stat{grid-column:span 2}
+  .tile-done{grid-column:span 2}
+}
+@media(max-width:900px){
+  .sidebar{position:fixed;left:0;top:0;transform:translateX(-102%);transition:transform .38s var(--ease);
+    box-shadow:var(--shadow-l);background:var(--surface)}
+  .sidebar.open{transform:none}
+  .sb-scrim{display:block;position:fixed;inset:0;z-index:35;background:rgba(17,17,17,.3);opacity:0;
+    pointer-events:none;transition:opacity .3s}
+  .sb-scrim.show{opacity:1;pointer-events:auto}
+  .menu-btn{display:grid}
+  .topbar{padding:12px 16px}
+  .content{padding:18px 16px 130px}
+  .page-head h1{font-size:34px}
+  .hide-sm{display:none}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+}
+@media(max-width:620px){
+  .mosaic{grid-template-columns:repeat(2,1fr);grid-auto-rows:78px}
+  .tile-new{grid-column:span 2;grid-row:span 2}
+  .tile-ai{grid-column:span 1;grid-row:span 1;border-radius:var(--r-l);flex-direction:row;gap:8px}
+  .tile-round{grid-column:span 1;grid-row:span 1;border-radius:var(--r-l)}
+  .tile-stat{grid-column:span 2}
+  .tile-done{grid-column:span 2}
+  .grid{grid-template-columns:1fr}
+  .grid2{grid-template-columns:1fr}
+  .toasts{left:14px;right:14px;bottom:14px}
+  .drawer{width:100%}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <svg class="logo-mark" viewBox="0 0 34 34" fill="none" aria-label="ORBIT">
+        <circle cx="17" cy="17" r="16" fill="var(--ink)"/>
+        <circle cx="17" cy="15.2" r="6.4" fill="var(--k-yellow)"/>
+        <ellipse cx="17" cy="17.4" rx="13.4" ry="4.6" transform="rotate(-18 17 17.4)"
+                 stroke="var(--bg)" stroke-width="2.4" fill="none"/>
+        <circle cx="28.2" cy="9.6" r="2.3" fill="var(--k-blue)"/>
+      </svg>
+      <div class="logo-type">
+        <div class="logo-word">ORB<em>I</em>T</div>
+        <div class="logo-sub">选题星球</div>
+      </div>
+    </div>
+    <div class="side-scroll">
+      <div class="side-head"><span class="mono">Categories</span></div>
+      <div class="cat-list" id="catList"></div>
+      <button class="add-cat" id="addCatBtn">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2.5v9M2.5 7h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        添加分类
+      </button>
+      <p class="side-hint">双击分类名称即可重命名</p>
+    </div>
+    <div class="side-foot">
+      <div class="theme-switch" id="themeSwitch">
+        <button data-theme="auto">自动</button><button data-theme="light">日间</button><button data-theme="dark">夜间</button>
+      </div>
+      <div class="io-row">
+        <button id="exportBtn">导出备份</button>
+        <button id="importBtn">导入备份</button>
+      </div>
+      <div class="save-note"><span class="save-dot"></span><span>已在此浏览器保存</span><button id="storageBtn">说明</button></div>
+    </div>
+  </aside>
+  <div class="sb-scrim" id="sbScrim"></div>
+
+  <div class="main">
+    <header class="topbar" id="topbar">
+      <button class="menu-btn" id="menuBtn" aria-label="菜单">
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M2.5 4.5h12M2.5 8.5h12M2.5 12.5h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <div class="search">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.6" cy="6.6" r="4.4" stroke="currentColor" stroke-width="1.5"/><path d="M10 10l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <input id="searchInput" placeholder="搜索标题、标签或笔记" aria-label="搜索">
+        <button class="search-clear" id="searchClear" aria-label="清除">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 2l7 7M9 2l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="spacer"></div>
+      <button class="btn btn-ghost btn-sm hide-sm" id="apiBtn">API</button>
+      <button class="btn btn-primary" id="newBtn">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 2v9M2 6.5h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        新建选题
+      </button>
+    </header>
+
+    <main class="content">
+      <section class="mosaic">
+        <button class="tile tile-new" id="tileNew">
+          <span class="mono">New idea</span>
+          <b>写下一个<br>新想法</b>
+          <span class="arrow"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 12L12 4M12 4H6M12 4v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <button class="tile tile-ai" id="tileAi">
+          <span class="sparkle"><svg width="17" height="17" viewBox="0 0 18 18" fill="none"><path d="M9 2l1.8 4.2L15 8l-4.2 1.8L9 14l-1.8-4.2L3 8l4.2-1.8L9 2z" fill="currentColor"/></svg></span>
+          <b>AI 选题</b>
+          <span class="mono">Generate</span>
+        </button>
+        <button class="tile tile-stat" id="tileDoing" data-st="doing">
+          <span class="mono">进行中 ↗</span><b id="nDoing">0</b>
+        </button>
+        <button class="tile tile-round" id="tileIdea" data-st="idea">
+          <b id="nIdea" style="font-size:24px;font-weight:800;letter-spacing:-.03em">0</b>
+          <span class="mono">灵感 ↗</span>
+        </button>
+        <button class="tile tile-done" id="tileDone" data-st="done">
+          <span class="mono">已完成 ↗</span>
+          <b id="nDone">0</b>
+          <div class="tile-bar" id="tileBar"></div>
+        </button>
+      </section>
+
+      <div class="page-head">
+        <div>
+          <div class="head-label"><span class="cat-dot" id="headDot"></span><span class="mono" id="headLabel">All ideas</span></div>
+          <h1 id="headTitle">全部选题</h1>
+        </div>
+        <p id="headSub">把散落的灵感，整理成下一件值得完成的作品。</p>
+      </div>
+
+      <section class="onboard" id="onboard" hidden>
+        <div class="onboard-ico"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2.2l1.8 4.3 4.3 1.8-4.3 1.8L9 14.4l-1.8-4.3L2.9 8.3l4.3-1.8L9 2.2z" fill="currentColor"/></svg></div>
+        <div>
+          <h3>先从一张卡片开始</h3>
+          <p>下面是几张可编辑的示例卡片。点开任意一张就能修改；有现成的 AI 回答，直接粘到「AI 选题 → 粘贴整理」里一键拆成卡片。</p>
+          <ol><li><i>1</i>点击卡片打开详情</li><li><i>2</i>所有改动自动保存</li><li><i>3</i>接入 API 后可直接生成</li></ol>
+        </div>
+        <button class="x-btn" id="onboardClose" aria-label="关闭">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+      </section>
+
+      <div class="toolbar">
+        <div class="segmented" id="statusSeg">
+          <button data-s="all">全部</button><button data-s="idea">灵感中</button>
+          <button data-s="doing">进行中</button><button data-s="done">已完成</button>
+        </div>
+        <div class="tb-right">
+          <button class="btn btn-ghost btn-sm" id="selectBtn">选择</button>
+          <div class="select-wrap">
+            <select id="sortSel" aria-label="排序">
+              <option value="updated">最近编辑</option><option value="created">最近创建</option>
+              <option value="priority">优先级</option><option value="title">标题名称</option>
+            </select>
+            <svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1.5 3l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="meta-row"><span class="mono" id="countTxt">0 ideas</span><span class="mono" id="saveTxt">Saved</span></div>
+      <div class="grid" id="grid"></div>
+    </main>
+  </div>
+</div>
+
+<div class="bulkbar" id="bulkbar">
+  <span>已选 <b id="bulkCount">0</b> 项</span>
+  <button class="btn btn-ghost btn-sm" id="bulkAll">全选当前</button>
+  <button class="btn btn-danger btn-sm" id="bulkDel">删除所选</button>
+  <button class="btn btn-ghost btn-sm" id="bulkExit">退出</button>
+</div>
+
+<div class="scrim" id="scrim"></div>
+
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <span class="mono" id="drawerLabel">Idea</span>
+    <button class="x-btn" id="drawerDel" title="删除此选题">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 4h9M5.5 4V2.8h3V4M4 4l.6 7.2h4.8L10 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="x-btn" id="drawerClose" aria-label="关闭">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M3 3l7 7M10 3l-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot"><span class="mono" id="drawerSave">自动保存</span><button class="btn btn-ghost btn-sm" id="drawerDone">完成</button></div>
+</aside>
+
+<div class="modal" id="mCat">
+  <span class="mono">New category</span><h2>添加一个分类</h2><p>名称和颜色之后都可以再调整。</p>
+  <div class="field"><label>分类名称</label><input class="ctrl" id="catName" placeholder="例如：品牌设计"></div>
+  <div class="field"><label>识别颜色</label><div class="swatches" id="catSwatches"></div></div>
+  <div class="modal-foot"><button class="btn btn-ghost btn-sm" data-close>取消</button><button class="btn btn-primary btn-sm" id="catSave">添加分类</button></div>
+</div>
+
+<div class="modal" id="mCatDel">
+  <span class="mono">Delete category</span><h2 id="catDelTitle">删除分类</h2>
+  <p>分类下的选题不会被删除，请选择转移去向。</p>
+  <div class="field"><label>将已有选题移动到</label><select class="ctrl" id="catMoveTo"></select></div>
+  <div class="modal-foot"><button class="btn btn-ghost btn-sm" data-close>取消</button><button class="btn btn-danger btn-sm" id="catDelOk">确认删除</button></div>
+</div>
+
+<div class="modal" id="mDel">
+  <span class="mono">Delete</span><h2 id="delTitle">删除这张选题卡？</h2><p id="delSub">此操作无法撤销。</p>
+  <div class="modal-foot"><button class="btn btn-ghost btn-sm" data-close>取消</button><button class="btn btn-danger btn-sm" id="delOk">确认删除</button></div>
+</div>
+
+<div class="modal" id="mStore">
+  <span class="mono">Data storage</span><h2>你的内容保存在哪里？</h2><p>纯本地工具，内容和 API Key 都不会上传到我们的服务器。</p>
+  <div class="note-list">
+    <div class="note-item"><div class="ico"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="2" y="3" width="11" height="9" rx="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 6h11" stroke="currentColor" stroke-width="1.4"/></svg></div>
+      <div><strong>当前保存位置</strong><span id="storeOrigin">此浏览器的本地站点数据</span></div></div>
+    <div class="note-item"><div class="ico"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 8l3 3 6-6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div><strong>不会丢失</strong><span>刷新、关闭浏览器、开新标签页。</span></div></div>
+    <div class="note-item"><div class="ico"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 2.5l5.5 10H2L7.5 2.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M7.5 6.3v2.6M7.5 10.8v.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <div><strong>需要注意</strong><span>换浏览器、换设备、无痕模式或清除站点数据不会同步，建议定期导出备份。</span></div></div>
+  </div>
+  <div class="modal-foot"><button class="btn btn-ghost btn-sm" data-close>知道了</button><button class="btn btn-primary btn-sm" id="storeExport">立即导出备份</button></div>
+</div>
+
+<div class="modal wide" id="mApi">
+  <span class="mono">AI connection</span><h2>接入你自己的模型</h2>
+  <p>Key 只存在这台设备的浏览器里，请求由浏览器直接发给服务商，不经过第三方。</p>
+  <div class="field"><label>服务商</label><div class="seg-sm" id="apiProv">
+    <button data-v="openai">OpenAI</button><button data-v="anthropic">Claude</button><button data-v="custom">兼容接口</button>
+  </div></div>
+  <div class="grid2">
+    <div class="field"><label>模型</label><input class="ctrl" id="apiModel" placeholder="gpt-4o-mini"></div>
+    <div class="field"><label>接口地址</label><input class="ctrl" id="apiBase" placeholder="https://api.openai.com/v1"></div>
+  </div>
+  <div class="field"><label>API Key</label><input class="ctrl" id="apiKey" type="password" placeholder="sk-..." autocomplete="off"></div>
+  <div class="modal-foot">
+    <button class="btn btn-ghost btn-sm" id="apiClear">清除</button>
+    <button class="btn btn-ghost btn-sm" data-close>取消</button>
+    <button class="btn btn-primary btn-sm" id="apiSave">保存</button>
+  </div>
+</div>
+
+<div class="modal wide" id="mGen">
+  <span class="mono">Idea engine</span><h2 id="genTitle">从方向到可执行选题</h2>
+  <div class="tabs" id="genTabs">
+    <button data-p="paste">粘贴整理</button><button data-p="ai">AI 生成</button><button data-p="local">本地模板</button>
+  </div>
+
+  <div class="pane" id="panePaste">
+    <div class="field"><label>把 ChatGPT / Claude 的回答整段粘进来</label>
+      <textarea class="ctrl" id="pasteBox" placeholder="支持 1. 2. 3.、- 列表、## 标题、「标题：xxx」等格式，带 #标签 会自动识别。"></textarea></div>
+    <div class="grid2">
+      <div class="field"><label>存入分类</label><select class="ctrl" id="pasteCat"></select></div>
+      <div class="field"><label>　</label><button class="btn btn-blue" id="pasteRun" style="width:100%">一键整理成卡片</button></div>
+    </div>
+  </div>
+
+  <div class="pane" id="paneAi">
+    <div class="field"><label>选题类型</label><div class="kind-row" id="kindRow"></div></div>
+    <div class="field"><label>我的方向 / 客户与受众</label><input class="ctrl" id="aiTopic" placeholder="例如：主打产地直采的小众咖啡品牌，受众是 25-35 岁城市白领"></div>
+    <div class="grid2">
+      <div class="field"><label>平台或场景</label><input class="ctrl" id="aiPlat" placeholder="小红书 / 线下快闪 / 作品集"></div>
+      <div class="field"><label>存入分类</label><select class="ctrl" id="aiCat"></select></div>
+    </div>
+    <div class="field"><label>生成数量</label><div class="seg-sm" id="aiCount"><button data-n="3">3 条</button><button data-n="5">5 条</button><button data-n="8">8 条</button></div></div>
+    <div class="hintbar" id="aiHint"></div>
+    <div id="aiErr"></div>
+  </div>
+
+  <div class="pane" id="paneLocal">
+    <div class="field"><label>我的方向</label><input class="ctrl" id="locTopic" placeholder="例如：小众咖啡品牌的视觉语言"></div>
+    <div class="grid2">
+      <div class="field"><label>平台或场景</label><input class="ctrl" id="locPlat" placeholder="小红书 / 作品集"></div>
+      <div class="field"><label>存入分类</label><select class="ctrl" id="locCat"></select></div>
+    </div>
+    <div class="field"><label>生成数量</label><div class="seg-sm" id="locCount"><button data-n="3">3 条</button><button data-n="5">5 条</button><button data-n="8">8 条</button></div></div>
+    <p class="mono" style="letter-spacing:.06em;text-transform:none">离线可用，用角度模板组合，不需要联网。</p>
+  </div>
+
+  <div class="gen-results" id="genResults"><p class="gen-empty">结果会出现在这里</p></div>
+  <div class="modal-foot">
+    <button class="btn btn-ghost btn-sm" data-close>关闭</button>
+    <button class="btn btn-line btn-sm" id="genRun">开始生成</button>
+    <button class="btn btn-primary btn-sm" id="genSave">存入选题库</button>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<input type="file" id="fileInput" accept="application/json" hidden>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const KEY='orbit-ideas-v3';
+const COLORS=['blue','orange','yellow','green','purple','pink','cyan','ink'];
+const STATUS={idea:{t:'灵感中',c:'pink'},doing:{t:'进行中',c:'blue'},done:{t:'已完成',c:'green'}};
+const PRI={low:'低',mid:'中',high:'高'}, PRI_N={low:1,mid:2,high:3};
+const KINDS=['品牌设计','活动设计','运营设计','自媒体内容','包装设计','个人作品'];
+const PACK_CATS=[['design','设计','orange'],['media','自媒体','yellow'],['culture','文创','green'],['works','作品','pink'],['event','活动设计','purple'],['operation','运营设计','cyan']];
+const PACK=[{"i":"manual-v3-01","t":"新中式茶饮「节气杯」季节包装系统","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V3"],"m":"茶饮品牌每月都要上新，但季节限定包装各做各的，没有形成系列资产。本项目用一套插画语言统一 24 节气限定杯，让顾客愿意“集杯”，提升复购与社交晒图。","n":"核心主张：用一只杯子，喝完一整年的节气\n\n【主副标题文案】\n方案 A　这一口，是立冬的味道 / 节气限定 · 每半月上新一次\n方案 B　喝到第 24 杯，一年就过完了 / 节气杯集杯计划\n\n【核心创意 · 如何体现插画风格】\n主画面　每个节气一幅剪纸式小风景（立冬是落叶与炉火，清明是雨中的柳与纸鸢），统一放在杯身中央的“窗格”里，24 只杯子排在一起就是一条完整的四季长卷。\n色彩　固定米白杯底和深棕文字；每个季度换一个主色：春天草绿、夏天钴蓝、秋天土橙、冬天番茄红。\n字体版式　节气名用胖圆手写体竖排，放在杯身一侧；另一侧放节气日期和一句口语短句。\n\n【关键视觉元素】\n节气小景窗格 / 24 色季节色环 / 集杯卡 / 手写节气名\n\n【物料延展文案】\n立冬到，来杯热的 · 这杯，敬霜降 · 杯子集齐，春天就来了\n\n【应用场景与落地形式】\n杯身 / 杯套　24 款节气插画，一个统一窗格模板\n纸袋 / 封口贴　当季主色加节气印章\n集杯卡　24 格手账式集章卡，集满可换周边\n门店物料　当季主 KV 海报和点单屏"},{"i":"manual-v3-02","t":"社区菜市场「菜场有光」品牌焕新","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V3"],"m":"老菜市场改造升级，需要一套新的品牌形象和导视系统，留住原有街坊，也吸引年轻人来逛、来拍。","n":"核心主张：把买菜这件小事，画成社区里最热闹的风景\n\n【主副标题文案】\n方案 A　早上七点，菜场最热闹 / 菜场有光 · 社区生活市集\n方案 B　今天吃什么，来菜场问问 / 新鲜的，都在这儿\n\n【核心创意 · 如何体现插画风格】\n主画面　大棚屋顶下排开一个个摊位，摊主是简笔人物，蔬果画成超大色块：番茄比人高，白菜像一座小山。热闹、夸张、有人情味。\n色彩　番茄红和草绿是主色，奶油黄做点缀；导视按区域分色：蔬果区绿、肉禽区红、水产区蓝。\n字体版式　区域名用超大胖圆字配一个手绘图标，让老人隔着远也能看清。\n\n【关键视觉元素】\n超大蔬果色块 / 大棚屋顶 / 简笔摊主 / 分区图标\n\n【物料延展文案】\n番茄比人高，白菜像座山 · 老张家的豆腐，还热着 · 菜场有光，买菜有劲\n\n【应用场景与落地形式】\n品牌标志　大棚屋顶加一束光的图形标\n导视系统　分区吊牌、摊位价签、地贴\n购物袋 / 围裙　统一发给商户使用\n开业主视觉　户外围挡和社区海报"},{"i":"manual-v3-03","t":"泉州「刺桐小礼」城市伴手礼","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V3"],"m":"文旅伴手礼普遍同质化。本项目为泉州打造一个城市伴手礼品牌，产品包括茶、糕点和文创，要让游客一眼认出“这是泉州”。","n":"核心主张：把一座古城，装进一个能带走的盒子\n\n【主副标题文案】\n方案 A　带一盒泉州回家 / 刺桐小礼 · 古城伴手礼\n方案 B　海风吹过的点心 / 一口一个老泉州\n\n【核心创意 · 如何体现插画风格】\n主画面　用剪纸山形的手法拼贴泉州意象：刺桐花、红砖古厝、开元寺双塔、渔船。每个产品对应一个城市角落，礼盒展开就是一张手绘城市地图。\n色彩　以红砖番茄红、海蓝和刺桐花的粉为主色，米白纸底。\n字体版式　品牌名用手写胖体字；盒盖开窗，露出里面的插画。\n\n【关键视觉元素】\n刺桐花 / 红砖古厝 / 开元寺双塔 / 渔船与海浪\n\n【物料延展文案】\n盒子打开，就是泉州 · 红砖墙里的甜 · 去泉州，不如先带它回家\n\n【应用场景与落地形式】\n礼盒 / 单品包装　6 个城市角落插画，组成一个系列\n手绘城市地图　附在礼盒内的折页\n门店陈列　货架插画背板\n电商主图　统一模板的白底场景图"},{"i":"manual-v3-04","t":"宠物鲜粮「毛孩饭堂」品牌视觉","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V3"],"m":"宠物鲜粮品牌主打“像给家人做饭一样”，要从冷冰冰的科学喂养话术里跳出来，建立温暖、可爱、可信赖的品牌形象。","n":"核心主张：给毛孩子开一间有烟火气的小饭堂\n\n【主副标题文案】\n方案 A　今天的饭，是妈妈做的 / 毛孩饭堂 · 每日鲜粮\n方案 B　开饭啦！ / 一碗鲜粮，一份惦记\n\n【核心创意 · 如何体现插画风格】\n主画面　猫狗系上围兜，坐在一张大餐桌前，碗里冒出热气；食材（鸡胸、南瓜、胡萝卜）画成超大色块，环绕在餐桌四周。\n色彩　奶油黄和土橙营造食欲感，草绿做点缀，深棕写文字。\n字体版式　胖圆标题配手写的配料表，像饭堂黑板上的菜单。\n\n【关键视觉元素】\n系围兜的猫狗 / 热气腾腾的碗 / 超大食材色块 / 黑板菜单\n\n【物料延展文案】\n今日菜单：鸡肉南瓜饭 · 吃饭这件事，我们很认真 · 碗见底，尾巴摇\n\n【应用场景与落地形式】\n产品包装　按口味分色的餐盒和外箱\n电商详情页　“今日菜单”式的长图\n社媒模板　宠物开饭打卡贴纸\n会员卡　饭票造型"},{"i":"manual-v3-05","t":"县城独立书店「街角有本书」","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V3"],"m":"县城新开的独立书店兼咖啡空间，需要完整的品牌视觉，让它成为本地年轻人的周末去处。","n":"核心主张：让县城的街角，多一个可以发呆的地方\n\n【主副标题文案】\n方案 A　街角有本书，进来坐坐 / 县城里的一间小书店\n方案 B　在这里，时间是用来浪费的 / 书 · 咖啡 · 一整个下午\n\n【核心创意 · 如何体现插画风格】\n主画面　书店门口的书一本本立起来，像街道两旁的房子；一个人捧着书坐在屋顶上，燕子从书页里飞出来。\n色彩　钴蓝天空、米白纸面、番茄红点缀，主调安静。\n字体版式　店名手写，配横线作业本底纹，把“读书笔记”的感觉带进来。\n\n【关键视觉元素】\n书本房子 / 屋顶上的读者 / 飞出书页的燕子 / 作业本横线\n\n【物料延展文案】\n进来坐坐，不买也行 · 今天读到哪一页了？ · 下午三点，适合发呆\n\n【应用场景与落地形式】\n门头 / 招牌　手绘店名加书本房子图形\n书签 / 帆布袋　店内销售的周边\n活动海报模板　读书会、分享会通用\n咖啡杯套　作业本横线款"},{"i":"manual-v3-06","t":"乡村民宿「云上人家」品牌形象","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V3"],"m":"海拔 600 米的乡村民宿群，主打“住进山里过几天慢日子”。需要一套从 Logo 到房间物料的完整品牌系统，让它在同质化的民宿里被记住。","n":"核心主张：把山里的一个晚上，画成值得专程奔赴的理由\n\n【主副标题文案】\n方案 A　山里有间屋，等你很久了 / 云上人家 · 山居民宿\n方案 B　睡到自然醒，窗外是云海 / 周末，住进山里\n\n【核心创意 · 如何体现插画风格】\n主画面　大山做成钴蓝色块，山腰一排小房子亮着橙色的灯，云像棉花糖一样飘在屋顶；房间门牌画成不同的小动物，一间房一个故事。\n色彩　钴蓝山体、土橙灯光、米白云朵，夜晚版本整体压深。\n字体版式　品牌名手写竖排，房号用大号数字，配一句晚安短句。\n\n【关键视觉元素】\n山腰小屋与暖灯 / 棉花糖云朵 / 动物门牌 / 钴蓝夜空\n\n【物料延展文案】\n欢迎回家，今晚只有星星 · 钥匙在这里，烦恼放门外 · 明早的云，替你留着\n\n【应用场景与落地形式】\n品牌标志与辅助图形　山形加灯光的主标，房间动物图标\n房间物料　门牌、钥匙牌、拖鞋袋、欢迎卡\n伴手礼　山茶、笋干小包装\n预订页与海报　小程序头图、景区周边投放"},{"i":"manual-v3-07","t":"国潮文具品牌「课间十分钟」","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V3"],"m":"面向学生和怀旧上班族的文具新品牌，需要把“课间”这种集体记忆做成视觉符号，提升货架辨识度和礼品属性。","n":"核心主张：把最快乐的十分钟，做成一整个文具系列\n\n【主副标题文案】\n方案 A　课间十分钟，够干很多事 / 文具 · 给认真玩的人\n方案 B　铃响了，别急着回教室 / 课间十分钟文具店\n\n【核心创意 · 如何体现插画风格】\n主画面　走廊、操场、小卖部被画成一格格色块，人物简笔，在扔纸团、跳皮筋、传小纸条；每一类文具对应一个课间场景。\n色彩　米白做纸，钴蓝、番茄红、奶油黄三色撞色，像旧课本封面。\n字体版式　标题用胖圆体，包装上放“课间任务清单”式的手写说明。\n\n【关键视觉元素】\n走廊与操场色块 / 简笔学生 / 纸团与纸条 / 课表与黑板\n\n【物料延展文案】\n铃响之前，先写完这一行 · 同桌，借你一支笔 · 十分钟，足够开心\n\n【应用场景与落地形式】\n包装系统　笔、本、尺、便利贴 4 个品类的统一版式\n礼盒　开学季“新同桌礼盒”\n店铺陈列　课桌造型货架与黑板价签\n周边　徽章、贴纸、课表卡"},{"i":"manual-v3-08","t":"复古汽水品牌「汽水铺子」","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V3"],"m":"区域复古汽水品牌拓展全国市场，要用怀旧加年轻的视觉打开便利店和电商渠道，做出“摆出来就好看”的瓶身系列。","n":"核心主张：一瓶气泡，装进整个夏天的记忆\n\n【主副标题文案】\n方案 A　咕嘟一口，夏天就来了 / 汽水铺子 · 老味新喝\n方案 B　拧开瓶盖，听见夏天 / 六种口味，六种夏天\n\n【核心创意 · 如何体现插画风格】\n主画面　每个口味一张剪纸小场景：橘子汽水是海边的太阳伞，荔枝是巷子口的冰柜，青柠是屋顶的晾衣绳；气泡画成一粒粒彩色圆点向上飘。\n色彩　一个口味一个主色：橙、荔枝红、青柠绿、汽水蓝，米白瓶标。\n字体版式　口味名放大，手写体加一句口语短句，瓶标像老式贴纸。\n\n【关键视觉元素】\n彩色气泡圆点 / 海边太阳伞 / 巷口冰柜 / 老式瓶盖\n\n【物料延展文案】\n气泡，是夏天的标点 · 老冰柜里的橘子味 · 今天，不开空调开汽水\n\n【应用场景与落地形式】\n瓶身与瓶标　6 款口味统一模板\n外箱与陈列　整箱排在一起拼成一幅大画\n便利店冰柜贴　冰柜门贴与价签\n电商主图　夏日场景图与礼盒"},{"i":"manual-v3-09","t":"夏日山野音乐节「山野有声」","c":"event","s":"灵感中","p":"中","g":["活动设计","商业插画","V3"],"m":"景区夏季举办露营音乐节，需要主视觉和全套现场物料，吸引年轻人上山过周末。","n":"核心主张：把舞台搭在山里，让风也来听歌\n\n【主副标题文案】\n方案 A　山野有声 / 夏日露营音乐节\n方案 B　今晚，山也想听歌 / 露营 · 音乐 · 星空\n\n【核心创意 · 如何体现插画风格】\n主画面　大山被画成一个巨大的音箱，山顶是舞台；帐篷、篝火和人群散落在山脚，音符像燕子一样飞过天空。\n色彩　钴蓝山体配草绿山脊，番茄红点缀舞台灯光。\n字体版式　主标题大字横跨山顶，演出阵容用手写列表。\n\n【关键视觉元素】\n山体音箱 / 山顶舞台 / 帐篷与篝火 / 飞过的音符\n\n【物料延展文案】\n风会唱，山会听 · 把帐篷搭在山脚下 · 音乐关了，星星还亮着\n\n【应用场景与落地形式】\n主 KV　社媒和票务页\n手环 / 门票　入场凭证\n现场导视　营地分区牌\n周边　帆布袋和渔夫帽"},{"i":"manual-v3-10","t":"海边风筝节「放飞一整个夏天」","c":"event","s":"灵感中","p":"中","g":["活动设计","商业插画","V3"],"m":"滨海度假区在暑期举办风筝节，希望聚拢亲子和年轻游客，增加海滩的停留时间和消费。","n":"核心主张：风来了，就把心事放上天\n\n【主副标题文案】\n方案 A　风来了，把夏天放上天 / 海边风筝节 · 7.12–7.14\n方案 B　去海边，放一只自己的风筝 / 免费领风筝，现场彩绘\n\n【核心创意 · 如何体现插画风格】\n主画面　海平面做成一条蓝色色带，风筝是画面主角：有的像鱼，有的像课本，有的像云，拖着长长的彩色尾巴；沙滩上人物简笔，仰头望天。\n色彩　天空钴蓝、沙滩奶油黄、风筝番茄红与草绿。\n字体版式　标题随风筝线向上斜排，大字压在海面上。\n\n【关键视觉元素】\n长尾风筝 / 蓝色海面色带 / 沙滩人物 / 风的线条\n\n【物料延展文案】\n今天风很大，适合想你 · 一线牵着整片天 · 风筝飞多高，快乐就多高\n\n【应用场景与落地形式】\n主 KV　景区入口和城市户外\n风筝彩绘台　现场体验区物料\n导览地图　手绘海滩活动地图\n周边　风筝、遮阳帽、帆布袋"},{"i":"manual-v3-11","t":"乡村丰收节「稻田有戏」","c":"event","s":"灵感中","p":"中","g":["活动设计","商业插画","V3"],"m":"县域乡村在秋收季举办丰收节，通过赶集、稻田演出、农事体验把游客请进村，带动农产品销售。","n":"核心主张：秋天最大的舞台，在稻田里\n\n【主副标题文案】\n方案 A　稻田有戏，等你来看 / 乡村丰收节 · 10.1–10.7\n方案 B　来田里，吃一口新米饭 / 割稻、打谷、吃新米\n\n【核心创意 · 如何体现插画风格】\n主画面　金色稻田画成一块块色块拼贴，田中间搭一个戏台，稻草人是主持人；村民扛着稻穗，孩子追着燕子跑。\n色彩　土橙与奶油黄的稻田，配草绿田埂和番茄红戏台。\n字体版式　标题像戏牌，竖排，加手绘边框。\n\n【关键视觉元素】\n金色稻田拼贴 / 田间戏台 / 稻草人 / 孩子与燕子\n\n【物料延展文案】\n新米，刚刚好 · 稻子熟了，等你来 · 在田里，吃一顿新米饭\n\n【应用场景与落地形式】\n主海报　县城、高速出入口\n农事体验手册　割稻、碾米、做糍粑流程\n赶集摊位　统一招牌与价签\n新米礼盒　节日限定包装"},{"i":"manual-v3-12","t":"城市草地露营节「草地上的一天」","c":"event","s":"灵感中","p":"中","g":["活动设计","商业插画","V3"],"m":"城市公园联合品牌举办草地露营节，需要一套轻松的活动视觉，把露营、野餐、市集、音乐整合在一个主题下。","n":"核心主张：不用走远，城市里也有一块可以躺下的草地\n\n【主副标题文案】\n方案 A　草地上，躺一天 / 城市露营节 · 周末限定\n方案 B　带上野餐垫，别带手机 / 一整个下午，什么都不做\n\n【核心创意 · 如何体现插画风格】\n主画面　大草坪像一张绿色毯子铺满画面，帐篷是三角色块，野餐垫是格子色块，人物躺着、坐着、放风筝，没有一个人在赶路。\n色彩　草绿主色，钴蓝天空，番茄红与奶油黄点缀帐篷和野餐垫。\n字体版式　标题低平横排，像躺在草地上的字，副标题手写。\n\n【关键视觉元素】\n绿色草坪 / 格子野餐垫 / 三角帐篷 / 躺着的人\n\n【物料延展文案】\n今天的任务：躺平 · 草在长，你也慢慢来 · 把周末，铺在草地上\n\n【应用场景与落地形式】\n主视觉　公园入口与地铁灯箱\n营地导览　分区地图与指示牌\n市集摊位　统一摊位招牌\n联名周边　野餐垫、折叠凳"},{"i":"manual-v3-13","t":"冰雪嘉年华「雪地里撒野」","c":"event","s":"灵感中","p":"中","g":["活动设计","商业插画","V3"],"m":"滑雪场与度假区冬季嘉年华，需要一个暖色调的冬季主视觉，打破冷冰冰的冰雪印象，吸引亲子和年轻情侣。","n":"核心主张：冬天不用缩着，去雪地里撒个野\n\n【主副标题文案】\n方案 A　雪地里，撒个野 / 冰雪嘉年华 · 12.20 开幕\n方案 B　冬天，是用来玩的 / 滑雪、雪圈、热红酒\n\n【核心创意 · 如何体现插画风格】\n主画面　雪山不画成白色，而是淡粉与奶油黄的色块，天空是亮蓝；人物穿红绿羽绒服，滑雪、打雪仗，雪人戴着围巾。\n色彩　亮蓝天空，番茄红与草绿衣服，奶油黄雪坡，整体偏暖。\n字体版式　标题圆胖带积雪效果，数字日期用大号红色。\n\n【关键视觉元素】\n淡粉雪山 / 红绿羽绒服 / 雪人与围巾 / 亮蓝天空\n\n【物料延展文案】\n雪不冷，玩起来就热 · 滑下去，才算冬天 · 雪人替你站岗\n\n【应用场景与落地形式】\n主海报　机场、高铁站、景区\n雪地导览　雪道和活动区地图\n雪具租赁物料　价签、号码牌\n周边　围巾、手套、暖手宝"},{"i":"manual-v3-14","t":"古城灯会「灯火里的老街」","c":"event","s":"灵感中","p":"中","g":["活动设计","商业插画","V3"],"m":"古城元宵灯会需要统一的视觉形象，覆盖灯组导览、夜游路线和商户联动，让游客愿意逛完整条街。","n":"核心主张：整条老街都亮起来，就像小时候的元宵\n\n【主副标题文案】\n方案 A　老街亮了，来看灯 / 古城元宵灯会 · 正月十五\n方案 B　提一盏灯，逛一座城 / 夜游路线与集灯章\n\n【核心创意 · 如何体现插画风格】\n主画面　老街像一条深蓝丝带，两侧是色块式的屋檐，灯笼是画面主角，大小不一，红黄粉绿；人物提着小灯笼走过石板路。\n色彩　深钴蓝夜色里点缀番茄红、奶油黄、浅粉灯笼。\n字体版式　标题像灯笼上的题字，竖排，周围放小灯笼装饰。\n\n【关键视觉元素】\n红黄粉绿灯笼 / 色块屋檐 / 石板老街 / 提灯的人\n\n【物料延展文案】\n灯亮着，就是有人等你 · 元宵，一起去看灯 · 走到街尽头，还有一盏\n\n【应用场景与落地形式】\n主视觉　古城入口与全城灯箱\n夜游路线图　折页地图\n商户灯笼贴　统一设计\n集灯章　7 个灯组打卡章"},{"i":"manual-v3-15","t":"商场暑期快闪「夏日玩水岛」","c":"operation","s":"灵感中","p":"中","g":["运营设计","商业插画","V3"],"m":"商场暑期要做中庭美陈加互动活动，拉动亲子客流，延长停留时间，带动餐饮和零售消费。","n":"核心主张：把商场中庭，变成一座夏天的小岛\n\n【主副标题文案】\n方案 A　商场里，有座岛 / 夏日玩水岛 · 7.1–8.31\n方案 B　今天，去岛上玩 / 凭小票解锁岛上任务\n\n【核心创意 · 如何体现插画风格】\n主画面　中庭是一座手绘小岛：棕榈、冰淇淋、泳圈、海浪全部做成大体量立体色块，每层楼是一个岛上区域，逛一圈就像环岛。\n色彩　钴蓝海水、奶油黄沙滩、番茄红泳圈、草绿棕榈。\n字体版式　区域标识大字手写，楼层导视用岛屿地图。\n\n【关键视觉元素】\n手绘小岛 / 立体泳圈 / 冰淇淋与棕榈 / 海浪地贴\n\n【物料延展文案】\n今天不上班，上岛 · 集齐 5 个章，登岛 · 海风吹不到，快乐先到\n\n【应用场景与落地形式】\n中庭美陈　立体岛屿和打卡装置\n楼层导视　环岛地图与引导地贴\n任务护照　集章换礼\n周边　泳圈、冰淇淋造型小物"},{"i":"manual-v3-16","t":"景区集章运营「山里头打卡护照」","c":"operation","s":"灵感中","p":"中","g":["运营设计","商业插画","V3"],"m":"山地景区需要提高游客的停留时间与回访，通过打卡集章带游客走完全部点位，同时带动文创销售。","n":"核心主张：走完一座山，盖满一本护照\n\n【主副标题文案】\n方案 A　山里头，盖满 8 个章 / 景区打卡护照 · 免费领取\n方案 B　走一圈，换一份山里的礼物 / 集章换文创\n\n【核心创意 · 如何体现插画风格】\n主画面　护照封面是一座剪纸式大山，内页每个点位一个手绘印章：古塔、瀑布、茶园、老桥；集满后拼成一座完整的山。\n色彩　钴蓝山体与草绿山脊，番茄红印章。\n字体版式　印章名手写，护照编号用大号数字。\n\n【关键视觉元素】\n剪纸大山 / 点位印章 / 护照封面 / 手绘导视牌\n\n【物料延展文案】\n第 3 个章，在瀑布边 · 没走到山顶，章不算数 · 一本护照，一座山\n\n【应用场景与落地形式】\n护照与印章　实体护照加 8 枚点位章\n点位导视牌　每个点位的手绘介绍牌\n兑换礼品　章满兑换的小礼物\n景区海报　入口与售票处"},{"i":"manual-v3-17","t":"品牌十周年「谢谢你一直在」","c":"operation","s":"灵感中","p":"中","g":["运营设计","商业插画","V3"],"m":"连锁品牌十周年庆，需要贯穿门店、线上线下的统一主题，向老顾客致谢，同时用回忆杀吸引新客。","n":"核心主张：十年很长，长到一碗面也有了回忆\n\n【主副标题文案】\n方案 A　十年，谢谢你一直在 / 十周年感恩季\n方案 B　你的第一次，在哪年？ / 十周年老顾客回忆墙\n\n【核心创意 · 如何体现插画风格】\n主画面　一块大蛋糕被画成十层的时间塔，每一层是一年的店铺回忆；顾客简笔人物排队上楼，手里拿着各年代的纪念品。\n色彩　番茄红、奶油黄为主，钴蓝作底，营造喜庆和怀旧。\n字体版式　“10”字做成超大数字，嵌入蛋糕塔。\n\n【关键视觉元素】\n十层蛋糕塔 / 大数字 10 / 怀旧小物 / 排队的顾客\n\n【物料延展文案】\n十年，一碗面的时间 · 老朋友，今天免单 · 谢谢你一直在\n\n【应用场景与落地形式】\n门店十周年 KV　门头、橱窗、桌贴\n回忆墙　顾客照片与留言墙\n纪念周边　限定杯、徽章、明信片\n老顾客礼包　会员专属礼盒"},{"i":"manual-v3-18","t":"社区邻里节「邻居，打个招呼」","c":"operation","s":"灵感中","p":"中","g":["运营设计","商业插画","V3"],"m":"地产或社区运营方举办邻里节，通过市集、共享餐桌、孩子的涂鸦墙，让邻居认识彼此，提升社区归属感和满意度。","n":"核心主张：住了三年，终于知道对门叫什么\n\n【主副标题文案】\n方案 A　邻居，打个招呼 / 社区邻里节 · 周六 14:00\n方案 B　对门的，来吃饭 / 楼下的长桌宴\n\n【核心创意 · 如何体现插画风格】\n主画面　一栋楼被画成一格格窗户，每扇窗里是不同的邻居探出头招手；楼下摆着一张长长的餐桌，所有人围坐一起。\n色彩　暖黄窗光，番茄红与钴蓝窗帘，米白底。\n字体版式　标题像门牌号，加手写的问候语。\n\n【关键视觉元素】\n窗户里的邻居 / 长桌宴 / 楼道与电梯 / 孩子涂鸦\n\n【物料延展文案】\n你好，我住 702 · 楼下，有一桌饭 · 认识一下，下次借酱油\n\n【应用场景与落地形式】\n电梯与楼道海报　每栋楼统一张贴\n长桌宴物料　桌旗、餐具套、名牌\n涂鸦墙　孩子们的创作墙\n活动手册　活动与参与指引"},{"i":"manual-v3-19","t":"商圈创意市集「摆摊日」","c":"operation","s":"灵感中","p":"中","g":["运营设计","商业插画","V3"],"m":"商业街区每月举办一次创意市集，需要一套能持续使用的活动视觉，吸引年轻摊主和逛街客群。","n":"核心主张：每个人都可以摆一天摊\n\n【主副标题文案】\n方案 A　今天，我也摆摊 / 创意市集 · 每月第二个周六\n方案 B　来逛，来买，来认识人 / 100 个摊位，100 个故事\n\n【核心创意 · 如何体现插画风格】\n主画面　街道被画成一条长长的色带，两侧是撑着彩色伞的摊位，物品都被夸张放大：一只巨大的手作杯、一本巨大的手账、一盆巨大的绿植。\n色彩　每期换一个主色，伞色和摊位配色随之变化。\n字体版式　标题像摊位招牌，数字期数大号显示。\n\n【关键视觉元素】\n彩色摊位伞 / 超大手作物件 / 街道色带 / 摊主人物\n\n【物料延展文案】\n今天，换你当老板 · 先逛一圈，再决定买什么 · 每个摊位，都有个故事\n\n【应用场景与落地形式】\n每期主海报　一期一版，整年可拼成长卷\n摊位招牌与价签　统一模板\n导览地图　街区手绘地图\n摊主证与围裙　摊主专属物料"},{"i":"manual-v3-20","t":"高校迎新季「新生通关手册」","c":"operation","s":"灵感中","p":"中","g":["运营设计","商业插画","V3"],"m":"银行、运营商或校园品牌做迎新季校园活动，需要一套有趣的迎新物料，让新生愿意领、愿意玩、愿意晒。","n":"核心主张：开学第一天，就像一场闯关游戏\n\n【主副标题文案】\n方案 A　新生，欢迎闯关 / 迎新通关手册 · 9.1 开启\n方案 B　第一关：找到你的宿舍 / 集齐 6 个章，通关领礼\n\n【核心创意 · 如何体现插画风格】\n主画面　校园被画成一张游戏地图：宿舍楼、食堂、图书馆、操场是不同关卡，新生背着行李箱像闯关角色，一路向前。\n色彩　钴蓝与奶油黄为主，草绿做地图，番茄红标记关卡。\n字体版式　关卡名手写，进度条用章的数量表示。\n\n【关键视觉元素】\n校园游戏地图 / 行李箱新生 / 关卡印章 / 进度条\n\n【物料延展文案】\n第一关：找到食堂 · 别怕，你不是一个人 · 通关奖励：一个新朋友\n\n【应用场景与落地形式】\n通关手册　口袋大小的闯关册\n校园展台　迎新摊位和装置\n关卡打卡章　6 个关卡的实体章\n通关礼　收纳袋、校园地图小物"},{"i":"manual-v5-01","t":"精品咖啡品牌「豆子旅行社」","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V5"],"m":"精品咖啡烘焙品牌，主打单一产地咖啡豆。需要用产地故事把“酸、甜、花香”这些抽象风味变得好懂，让新手也敢买。","n":"核心主张：每一包咖啡豆，都是一张去产地的机票\n\n【主副标题文案】\n方案 A　这一杯，从埃塞俄比亚出发 / 豆子旅行社 · 单一产地咖啡\n方案 B　今天，去哥伦比亚喝杯咖啡 / 每包豆子，一张产地机票\n\n【核心创意 · 如何体现插画风格】\n主画面　每个产地一幅剪纸风景：埃塞是高原与花朵，哥伦比亚是山坡与骡子，云南是梯田；豆袋被设计成登机牌，风味用三个手写标签标注。\n色彩　按产地分色：埃塞草绿、哥伦比亚番茄红、云南钴蓝，奶油黄做点缀。\n字体版式　产地名放大成登机牌上的目的地，风味描述用手写体。\n\n【关键视觉元素】\n产地剪纸风景 / 登机牌 / 手写风味标签 / 咖啡豆色块\n\n【物料延展文案】\n下一站：云南 · 酸酸甜甜的，像刚下飞机 · 豆子先到，人也快了\n\n【应用场景与落地形式】\n豆袋包装　登机牌造型，一个产地一款配色\n礼盒　“环球旅行”6 包装盒\n门店物料　杯套、菜单、风味轮海报\n线上详情页　产地地图长图"},{"i":"manual-v5-02","t":"儿童运动品牌「撒欢」","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V5"],"m":"少儿运动服饰与运动馆品牌，面向 3–10 岁家庭。需要摆脱“专业训练”的严肃感，让家长觉得安心、孩子觉得好玩。","n":"核心主张：孩子的运动，本来就是玩出来的\n\n【主副标题文案】\n方案 A　撒欢！跑起来 / 儿童运动品牌 · 让孩子玩够\n方案 B　今天，摔倒也是一种运动 / 撒欢运动馆 · 周末体验课\n\n【核心创意 · 如何体现插画风格】\n主画面　孩子是简笔小人，在跳、跑、翻滚，动作夸张；运动场被画成彩色色块，球、绳、垫子是超大尺寸的玩伴；每件衣服背后有一个动作小图标。\n色彩　钴蓝、番茄红、奶油黄、草绿四色轮换，明快有活力。\n字体版式　品牌名用跳动的胖圆体，每个字像在蹦。\n\n【关键视觉元素】\n夸张动作小人 / 超大运动器材 / 彩色场地色块 / 动作图标\n\n【物料延展文案】\n再跑一圈，不累 · 今天，谁也别想让我坐着 · 流汗的孩子，笑得最大声\n\n【应用场景与落地形式】\n品牌标志与图形　字形跳动的主标，动作图标库\n童装吊牌与包装　每个系列一个动作\n运动馆导视　分区地贴和墙面插画\n体验课物料　海报、小徽章、成长手册"},{"i":"manual-v5-03","t":"轻食沙拉品牌「今天吃点绿的」","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V5"],"m":"面向写字楼白领的轻食沙拉品牌，要在同质化的健康餐里做出辨识度，让“吃草”变成一件开心、值得拍照的事。","n":"核心主张：把吃菜这件事，做得一点都不委屈\n\n【主副标题文案】\n方案 A　今天，吃点绿的 / 轻食沙拉 · 每日现做\n方案 B　菜比你想象的好吃 / 12 种沙拉，天天不重样\n\n【核心创意 · 如何体现插画风格】\n主画面　沙拉碗被画成一座色块小花园：番茄是红色圆球，玉米是黄色月牙，生菜是绿色波浪，蔬菜像人一样排队入碗。\n色彩　草绿主色，番茄红、奶油黄、浅粉点缀，米白底衬托新鲜感。\n字体版式　标题胖圆，像贴在冰箱上的便利贴，圈出重点词。\n\n【关键视觉元素】\n沙拉花园 / 蔬菜排队 / 波浪生菜 / 圈出重点\n\n【物料延展文案】\n绿的，才是今天的重点 · 午饭，不用克制 · 菜也可以很好吃\n\n【应用场景与落地形式】\n餐盒与杯盖　统一花园图案，12 款配料各一种色\n门店与取餐柜　取餐号牌、柜面插画\n外卖袋与贴纸　袋身大图案\n写字楼投放　电梯框架海报"},{"i":"manual-v5-04","t":"防晒品牌「出门有光」","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V5"],"m":"新锐防晒品牌，面向 20–35 岁通勤和户外人群，需要把“防晒”从功能说明变成一种积极的出门状态。","n":"核心主张：出门，不用躲太阳\n\n【主副标题文案】\n方案 A　出门有光 / 防晒品牌 · 让阳光好好陪你\n方案 B　太阳来了，你不用躲 / SPF50+，一抹就走\n\n【核心创意 · 如何体现插画风格】\n主画面　太阳被画成一个大大的橙色圆，会笑，会伸出光线拥抱人；人物简笔，戴着帽子、拿着防晒，在海边、公园、街头自在行走。\n色彩　奶油黄与土橙的太阳，钴蓝的天空，番茄红点缀产品。\n字体版式　标题像太阳光芒一样放射排布。\n\n【关键视觉元素】\n笑着的太阳 / 光线 / 简笔出门人物 / 蓝色天空\n\n【物料延展文案】\n晒不黑的，是心情 · 带上它，出门去 · 今天阳光不错，别躲\n\n【应用场景与落地形式】\n产品包装　管身、盒身、套装礼盒\n门店陈列　试用台和地贴\n夏季海报　地铁、商场投放\n联名周边　遮阳帽、小风扇"},{"i":"manual-v5-05","t":"预制菜品牌「回家吃饭」","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V5"],"m":"家庭预制菜品牌，面向双职工和独居青年，需要把“加热即食”和“有家的味道”结合，避免工业感。","n":"核心主张：不会做饭，也能让家里有饭香\n\n【主副标题文案】\n方案 A　回家吃饭 / 预制菜 · 加热 8 分钟\n方案 B　今晚，有人给你留了饭 / 每一餐，像家里做的\n\n【核心创意 · 如何体现插画风格】\n主画面　一扇亮灯的窗，窗里餐桌上摆满大块色彩的菜品；菜盒像一扇小窗，打开就是一桌饭；人物回到家，门口有暖光。\n色彩　暖黄的灯光，番茄红与草绿的菜品，钴蓝夜色。\n字体版式　标题放在窗框里，像一张留给家人的纸条。\n\n【关键视觉元素】\n亮灯的窗 / 桌上的大菜 / 回家的人 / 纸条标题\n\n【物料延展文案】\n今晚，不用想吃什么 · 加热 8 分钟，家就到了 · 有饭，就有家\n\n【应用场景与落地形式】\n餐盒包装　小窗造型的外盒，一道菜一扇窗\n外箱与保温袋　送达包装\n线上主图　亮灯窗口场景\n线下冷柜贴　便利店冷柜"},{"i":"manual-v5-06","t":"花店品牌「窗台星球」","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V5"],"m":"社区绿植与鲜花订阅品牌，需要一套让人想收藏的视觉，让用户把绿植当作“在家养一颗小星球”。","n":"核心主张：把一点绿，放到你的窗台上\n\n【主副标题文案】\n方案 A　窗台上，有颗小星球 / 绿植与鲜花订阅\n方案 B　每周，换一颗新星球 / 订阅一束花，邂逅一盆绿\n\n【核心创意 · 如何体现插画风格】\n主画面　每盆植物被画成一颗小星球，漂浮在窗台上，有的开花、有的长叶、有的结果；窗外是蓝天和云，窗内是一排星球。\n色彩　草绿、浅粉、奶油黄为主，钴蓝窗外背景。\n字体版式　植物名手写成星球的名字，下面配养护小贴士。\n\n【关键视觉元素】\n星球植物 / 窗台与窗外 / 浅粉花朵 / 手写植物名\n\n【物料延展文案】\n本周星球：龟背竹 · 浇一次水，长一片叶 · 窗台，也可以是宇宙\n\n【应用场景与落地形式】\n包装与花盆　统一星球图案的花盆和花束纸\n订阅卡　每周一张主题卡\n门店橱窗　星球主题陈列\n线上订阅页　每月主题 KV"},{"i":"manual-v5-07","t":"城市电动自行车品牌「通勤快乐」","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V5"],"m":"电动自行车新品牌，面向短途通勤人群，要把“代步工具”做成“让通勤变好玩”的生活方式，打开年轻用户。","n":"核心主张：每天上班路上，也可以不赶\n\n【主副标题文案】\n方案 A　通勤，也可以很快乐 / 城市电动自行车\n方案 B　早高峰，我选择轻松 / 15 分钟，从家到公司\n\n【核心创意 · 如何体现插画风格】\n主画面　城市是一条彩色色带，车在上面飞，人物简笔、笑着，路边的建筑被拉成线条；堵车的汽车被画成慢慢爬的小色块。\n色彩　钴蓝、草绿、番茄红，车体选用奶油黄做亮点。\n字体版式　标题沿着路线弯曲排布，像在车道上奔跑。\n\n【关键视觉元素】\n彩色道路色带 / 简笔骑行人 / 慢速汽车 / 拉成线的建筑\n\n【物料延展文案】\n今天，不赶 · 绿灯，是一种福利 · 骑出去，就快乐\n\n【应用场景与落地形式】\n车身贴纸与配色　三款主色车\n门店形象　门头、地贴、试骑区\n线上主图　通勤场景系列\n头盔与周边　联名头盔、通勤包"},{"i":"manual-v5-08","t":"社区烘焙品牌「出炉啦」","c":"design","s":"灵感中","p":"中","g":["品牌设计","商业插画","V5"],"m":"社区烘焙店升级成连锁品牌，主打现烤，需要把“热腾腾”做成可感知的视觉，也要有适合社交传播的包装。","n":"核心主张：整条街最早亮灯的，是面包店\n\n【主副标题文案】\n方案 A　出炉啦！ / 现烤面包 · 每天 7 点\n方案 B　整条街，都闻到了 / 热的，才是对的\n\n【核心创意 · 如何体现插画风格】\n主画面　面包被画成一个个大色块：吐司像一座金色小山，法棍像一根长长的桥，可颂像一只飞翔的鸟；热气被画成一圈圈曲线，从面包上升起来。\n色彩　奶油黄与土橙的面包，番茄红招牌，米白底。\n字体版式　“出炉啦”三个字像一块块烤出来的面包，边缘圆胖。\n\n【关键视觉元素】\n面包色块 / 热气曲线 / 吐司山与法棍桥 / 出炉灯牌\n\n【物料延展文案】\n刚出炉，趁热 · 早上 7 点，面包先醒 · 今天的第一口，给你\n\n【应用场景与落地形式】\n包装袋与贴纸　牛皮纸袋，热气图案\n门头与灯箱　“出炉”灯牌\n会员卡　面包造型会员卡\n社区投放　楼道、电梯小海报"},{"i":"manual-v5-09","t":"城市夜跑嘉年华「夜里发光」","c":"event","s":"灵感中","p":"中","g":["活动设计","商业插画","V5"],"m":"品牌联合城市举办夜跑活动，需要统一的赛事视觉，覆盖报名、现场和跑后派对，吸引年轻跑者和路人。","n":"核心主张：天黑了，整座城市是你的赛道\n\n【主副标题文案】\n方案 A　夜里发光 / 城市夜跑嘉年华 · 11.8 开跑\n方案 B　天黑了，才是我们的主场 / 5 公里发光跑 · 免费报名\n\n【核心创意 · 如何体现插画风格】\n主画面　深蓝夜空，城市是色块，跑道是发光的丝带，跑者的鞋、帽子、手环会发光；终点有一座大大的发光拱门。\n色彩　深钴蓝夜色，荧光感的黄绿、粉红做发光点。\n字体版式　标题像霓虹灯一样发光，圆润加描边。\n\n【关键视觉元素】\n发光跑道丝带 / 夜空与城市色块 / 发光拱门 / 跑者小人\n\n【物料延展文案】\n夜里，跑成一颗星 · 天黑了，更要出发 · 最后一公里，有光\n\n【应用场景与落地形式】\n主 KV　户外大牌与社交媒体\n号码布与发光手环　跑者装备\n终点拱门　现场主装置\n跑后派对　点歌台与小吃摊"},{"i":"manual-v5-10","t":"水族馆夏夜「海底大派对」","c":"event","s":"灵感中","p":"中","g":["活动设计","商业插画","V5"],"m":"水族馆夏季夜场，需要吸引年轻情侣和家庭夜间入馆，用有趣的主题延长停留，带动餐饮和周边。","n":"核心主张：闭馆之后，鱼群开了一场派对\n\n【主副标题文案】\n方案 A　海底大派对 / 水族馆夏夜场 · 19:00–22:00\n方案 B　今晚，鱼也想熬夜 / 夜场限定，海底音乐会\n\n【核心创意 · 如何体现插画风格】\n主画面　水族馆被画成一个大大的舞台：鲸鱼是主唱，海龟打鼓，水母是舞台灯；观众是各种小鱼，戴着派对帽。\n色彩　深海蓝做背景，珊瑚红、荧光黄、浅粉点缀。\n字体版式　标题像气泡一样向上排布，字里有气泡。\n\n【关键视觉元素】\n鲸鱼主唱 / 水母舞台灯 / 派对帽小鱼 / 气泡\n\n【物料延展文案】\n今晚，鱼也熬夜 · 一起，跳进海里 · 水母灯亮了，派对开始\n\n【应用场景与落地形式】\n主海报　地铁和商场投放\n夜场门票与手环　夜场专属\n馆内导视　派对地图\n周边　发光水母灯、派对帽"},{"i":"manual-v5-11","t":"亲子乐园「小孩说了算」","c":"event","s":"灵感中","p":"中","g":["活动设计","商业插画","V5"],"m":"亲子乐园六一档，需要一套不是“大人视角”的主视觉，让孩子主动想来，也让家长愿意拍照分享。","n":"核心主张：今天，孩子当家\n\n【主副标题文案】\n方案 A　小孩说了算 / 儿童节亲子乐园 · 6.1\n方案 B　今天，大人听小孩的 / 孩子点单，大人买单\n\n【核心创意 · 如何体现插画风格】\n主画面　孩子们变成巨人，大人缩成小人；孩子拿着大遥控器，指挥着大人去玩、去吃、去拍照；乐园是用积木搭成的。\n色彩　番茄红、钴蓝、奶油黄、草绿的积木配色，明快有趣。\n字体版式　标题像积木字，一块一块拼起来。\n\n【关键视觉元素】\n巨人孩子 / 缩小的大人 / 积木乐园 / 大遥控器\n\n【物料延展文案】\n今天，小孩说了算 · 大人，请排队 · 本日规则：孩子最大\n\n【应用场景与落地形式】\n主视觉　儿童节全场景\n乐园导览图　儿童视角的地图\n互动任务卡　孩子发号施令的任务\n入园周边　小遥控器徽章"},{"i":"manual-v5-12","t":"精酿啤酒节「干杯夏天」","c":"event","s":"灵感中","p":"中","g":["活动设计","商业插画","V5"],"m":"城市夏季精酿啤酒节，需要一套轻松、有记忆点的视觉，覆盖啤酒品牌、舞台、集市，吸引年轻人傍晚来聚会。","n":"核心主张：夏天太长，值得多干几杯\n\n【主副标题文案】\n方案 A　干杯，夏天 / 城市精酿啤酒节 · 7.20–7.22\n方案 B　夏天，泡沫刚刚好 / 30 家酒厂，100 款精酿\n\n【核心创意 · 如何体现插画风格】\n主画面　超大的啤酒杯是主体，泡沫溢出变成白云，杯里是金色的夕阳；人们在杯边、杯沿、泡沫上举杯碰杯。\n色彩　金黄啤酒色，钴蓝夜空，番茄红点缀，米白泡沫。\n字体版式　标题像泡沫一样圆润，层层叠叠。\n\n【关键视觉元素】\n超大啤酒杯 / 泡沫云朵 / 金色夕阳 / 碰杯的人\n\n【物料延展文案】\n干杯，夏天 · 泡沫，是夏天的云 · 晚上七点，开喝\n\n【应用场景与落地形式】\n主 KV　户外与社交媒体\n酒杯与手环　统一设计的节日杯\n酒厂摊位　统一招牌\n舞台背景　大型插画背景墙"},{"i":"manual-v5-13","t":"环湖骑行大会「骑一圈，环一湖」","c":"event","s":"灵感中","p":"中","g":["活动设计","商业插画","V5"],"m":"湖区景区联合骑行品牌举办骑行大会，需要主视觉和沿途物料，让骑行者愿意拍照，也带动沿线餐饮民宿。","n":"核心主张：一圈 40 公里，一路都是风景\n\n【主副标题文案】\n方案 A　骑一圈，环一湖 / 环湖骑行大会 · 4.19\n方案 B　风从湖面来，一路追着你 / 40 公里，8 个补给站\n\n【核心创意 · 如何体现插画风格】\n主画面　湖被画成一块大大的蓝色，环湖路是一条彩色丝带，骑行者像彩色小点串在上面；沿途有补给站、桥、塔、花。\n色彩　钴蓝湖水、草绿湖岸、番茄红骑行服、奶油黄补给站。\n字体版式　标题沿着湖岸弯曲，里程数字大号突出。\n\n【关键视觉元素】\n蓝色湖面 / 环湖丝带 / 骑行小点 / 补给站\n\n【物料延展文案】\n风在湖边等你 · 骑一圈，看八种风景 · 补给站，在前面\n\n【应用场景与落地形式】\n主海报　景区入口与社群\n补给站导视　8 个站的手绘标识\n完赛奖牌　湖形奖牌\n骑行手册　路线图与风景打卡点"},{"i":"manual-v5-14","t":"秋日银杏季「黄了整座山」","c":"event","s":"灵感中","p":"中","g":["活动设计","商业插画","V5"],"m":"山地景区秋季银杏观赏季，需要主视觉和导览系统，延长赏叶期的客流，并带动周边民宿、餐饮。","n":"核心主张：秋天最认真的一件事，是把山染黄\n\n【主副标题文案】\n方案 A　黄了整座山 / 银杏季 · 10.25–11.20\n方案 B　秋天，落在这座山里 / 走进一片金色的山\n\n【核心创意 · 如何体现插画风格】\n主画面　整座山是大块的金黄色块，山间有一条蓝色小溪，银杏叶像一只只小手落下；人们站在树下，抬头看叶。\n色彩　金黄与土橙为主，钴蓝溪流，草绿残留。\n字体版式　标题像落叶一样随意散落，笔画带叶形。\n\n【关键视觉元素】\n金黄山体 / 蓝色小溪 / 飘落的叶子 / 抬头的人\n\n【物料延展文案】\n山黄了，你也来 · 今天，银杏最好看 · 落一片叶，带回家\n\n【应用场景与落地形式】\n主海报　高速出口和景区门口\n赏叶地图　最佳赏叶点位\n落叶书签　门票附赠\n周边　银杏叶造型小物"},{"i":"manual-v5-15","t":"高铁站快闪「出发层」","c":"operation","s":"灵感中","p":"中","g":["运营设计","商业插画","V5"],"m":"城市文旅局联合高铁站做快闪，让旅客在候车时发现目的地，带动出行和城市宣传。","n":"核心主张：出发之前，先在这里愣一会儿\n\n【主副标题文案】\n方案 A　下一站，去哪儿？ / 城市文旅快闪 · 候车厅\n方案 B　候车 20 分钟，先逛一座城 / 到站前，先打个卡\n\n【核心创意 · 如何体现插画风格】\n主画面　候车厅里搭一个手绘城市小站，墙面是不同目的地的剪纸风景，每个打卡点对应一个城市；旅客站在窗口拍照，背景是目的地。\n色彩　钴蓝、草绿、番茄红，每个城市一种主色。\n字体版式　目的地名放大成车站站牌，副标题像到站广播。\n\n【关键视觉元素】\n手绘小站 / 目的地窗口 / 城市剪纸风景 / 站牌标题\n\n【物料延展文案】\n到站前，先来这一站 · 候车 20 分钟，够去一座城 · 下一站，你定\n\n【应用场景与落地形式】\n快闪装置　城市小站与拍照窗口\n地贴导视　从闸机到装置的引导\n打卡卡片　集章换明信片\n线上话题　打卡海报模板"},{"i":"manual-v5-16","t":"购物中心冬日市集「雪屋小镇」","c":"operation","s":"灵感中","p":"中","g":["运营设计","商业插画","V5"],"m":"购物中心冬季主题运营，通过小镇式美陈和市集，带动人流和节日消费，提升停留时长。","n":"核心主张：把冬天，搭成一座小镇\n\n【主副标题文案】\n方案 A　雪屋小镇，开门啦 / 冬日市集 · 12.1–1.5\n方案 B　今年冬天，住在商场里 / 小镇有 30 间小屋\n\n【核心创意 · 如何体现插画风格】\n主画面　中庭是一座小镇：彩色小屋、雪人、路灯、小火车，每家店是一间小屋；人们在小镇里逛、吃、拍照。\n色彩　钴蓝夜色，番茄红屋顶，奶油黄窗光，白色雪。\n字体版式　标题像雪屋招牌，屋顶有积雪。\n\n【关键视觉元素】\n彩色小屋 / 雪人与路灯 / 小火车 / 积雪屋顶\n\n【物料延展文案】\n下雪了，小镇开门 · 每间小屋，一个惊喜 · 今年冬天，不用出城\n\n【应用场景与落地形式】\n中庭美陈　小镇主装置\n摊位小屋　统一的 30 间小屋\n集章地图　小镇探险手册\n夜间灯光秀　整点点灯"},{"i":"manual-v5-17","t":"地铁主题站「这一站，有点甜」","c":"operation","s":"灵感中","p":"中","g":["运营设计","商业插画","V5"],"m":"品牌联合地铁线路打造主题站，需要整个站厅的美陈和导视，让乘客愿意停留、拍照、发社交平台。","n":"核心主张：地铁里的 3 分钟，也可以很甜\n\n【主副标题文案】\n方案 A　这一站，有点甜 / 地铁主题站 · 11 月限定\n方案 B　换乘之前，先吃颗糖 / 整个站厅，都是糖果色\n\n【核心创意 · 如何体现插画风格】\n主画面　站台和通道被画成一颗颗糖果、棒棒糖、蛋糕；乘客走过，像走在糖果里；车厢外贴有大大的糖纸图案。\n色彩　糖果色：浅粉、奶油黄、草绿、钴蓝，高饱和但明亮。\n字体版式　标题像糖纸一样扭起来，字里有糖纹。\n\n【关键视觉元素】\n糖果 / 棒棒糖 / 糖纸车厢 / 糖果地贴\n\n【物料延展文案】\n下一站，甜到你 · 车来了，先吃一颗 · 这一站，别急着走\n\n【应用场景与落地形式】\n站厅美陈　墙面、地贴、立柱\n车厢广告　一整列糖纸车厢\n扶梯灯箱　连续画面\n乘客周边　小糖果盒、站票"},{"i":"manual-v5-18","t":"暑期研学营「小小探险家」","c":"operation","s":"灵感中","p":"中","g":["运营设计","商业插画","V5"],"m":"研学机构或景区暑期营，需要全程活动的物料与视觉，让家长一眼看懂内容，也让孩子觉得“像探险”。","n":"核心主张：一周，把大自然当教室\n\n【主副标题文案】\n方案 A　小小探险家，出发 / 暑期研学营 · 7 天 6 晚\n方案 B　这个夏天，去山里上课 / 6 个任务，7 枚勋章\n\n【核心创意 · 如何体现插画风格】\n主画面　孩子们背着大背包，穿越山川、森林、溪流，身后是一张展开的大地图；每天任务是一座小山，完成就插上旗子。\n色彩　草绿、钴蓝、土橙，勋章用番茄红。\n字体版式　标题像地图上的路线名，字旁带小旗子。\n\n【关键视觉元素】\n大背包孩子 / 展开的大地图 / 任务小旗 / 勋章\n\n【物料延展文案】\n今天的任务：过溪 · 完成一座山，插一面旗 · 勋章，是自己挣的\n\n【应用场景与落地形式】\n营员手册　任务地图与日记页\n营服与帽子　统一设计\n勋章与证书　7 枚任务勋章\n现场导视　营地与路线牌"},{"i":"manual-v5-19","t":"企业运动会「全员出场」","c":"operation","s":"灵感中","p":"中","g":["运营设计","商业插画","V5"],"m":"企业年度团建运动会，需要一套有趣的视觉：队伍标识、项目海报、奖牌和现场导视，让员工愿意参与、愿意拍照。","n":"核心主张：不加班的一天，大家一起玩\n\n【主副标题文案】\n方案 A　全员出场 / 公司运动会 · 11.15\n方案 B　今天，只比开心 / 5 个项目，4 支队伍\n\n【核心创意 · 如何体现插画风格】\n主画面　四支队伍分别是四种颜色，运动项目被画成夸张的色块动作：拔河像一条红色长龙，跳绳像彩色弧线，接力像飞舞的丝带。\n色彩　四队四色：钴蓝、番茄红、草绿、奶油黄。\n字体版式　标题像运动会横幅，粗圆字，带彩带。\n\n【关键视觉元素】\n四色队伍 / 拔河长龙 / 彩色跳绳弧线 / 横幅\n\n【物料延展文案】\n今天，没有 KPI · 全员出场，不许请假 · 赢了请吃饭，输了也行\n\n【应用场景与落地形式】\n队伍旗帜与服装　四色统一设计\n项目海报　5 张项目主题\n奖牌与奖状　手绘设计\n现场导视　项目区与休息区指示牌"},{"i":"manual-v5-20","t":"新店开业「开张大吉」","c":"operation","s":"灵感中","p":"中","g":["运营设计","商业插画","V5"],"m":"连锁品牌新店开业，需要一套开业氛围物料，覆盖门头、气球、传单、试吃摊位，吸引周边居民进店。","n":"核心主张：街边新开了一家店，值得热闹一下\n\n【主副标题文案】\n方案 A　开张大吉 / 新店开业 · 前三天半价\n方案 B　新邻居，来打个招呼 / 开业送一份小礼物\n\n【核心创意 · 如何体现插画风格】\n主画面　门店是一座彩色小房子，门口是气球和彩带，路过的人被气球拉着走进来；店员简笔，笑着挥手欢迎。\n色彩　番茄红、奶油黄、钴蓝，开业气氛。\n字体版式　标题像门头大招牌，两边挂着彩带。\n\n【关键视觉元素】\n彩色小房子 / 气球彩带 / 挥手店员 / 大招牌\n\n【物料延展文案】\n新邻居，请多关照 · 进来，我们开张了 · 第一单，有惊喜\n\n【应用场景与落地形式】\n门头与橱窗　开业主视觉\n气球与拱门　现场氛围\n传单与优惠券　周边派发\n试吃摊位　统一设计的摊位"},{"i":"brand-01","t":"城市咖啡品牌视觉升级","c":"design","s":"进行中","p":"高","g":["品牌设计","VI","咖啡"],"m":"为社区咖啡店建立亲切、鲜明且可持续延展的视觉系统。","n":"核心问题：如何让品牌既保留社区温度，又拥有适合社交传播的视觉记忆点？\n\n待整理：竞品观察、品牌关键词、应用场景清单。"},{"i":"design-02","t":"在地水果包装字体实验","c":"design","s":"灵感中","p":"低","g":["包装设计","字体"],"m":"从水果摊手写价签出发，建立一套有地域气质的包装字体。","n":"避免复古符号堆砌，重点研究真实手写字的节奏。"},{"i":"media-01","t":"设计师的一周灵感采集","c":"media","s":"灵感中","p":"中","g":["短视频","创作日常"],"m":"用短视频记录真实的灵感来源与从观察到输出的过程。","n":"不做教程合集，重点呈现观察和思考的转变。"},{"i":"culture-01","t":"城市声音收藏计划","c":"culture","s":"灵感中","p":"高","g":["城市文化","声音","纪念品"],"m":"把熟悉的街道声音转化成可扫码聆听的城市纪念品。","n":"可从菜市场、轮渡、街巷叫卖和老建筑环境声切入。"},{"i":"works-01","t":"十二种无用但快乐的形状","c":"works","s":"进行中","p":"中","g":["个人作品","动态图形"],"m":"围绕日常情绪进行一组几何图形与动态视觉实验。","n":"先用同一套网格建立 12 个形状，再测试动态规律。"},{"i":"event-01","t":"周末无用发明展","c":"event","s":"已完成","p":"低","g":["展览","互动体验"],"m":"邀请普通人展示不解决问题、但能让人开心的小发明。","n":"空间分为投稿区、测试区和无用荣誉墙。"}];
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const now=()=>Date.now();
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+let S=load();
+let view={cat:'all',status:'all',sort:'updated',q:''};
+let sel={on:false,ids:new Set()};
+let openId=null, pending=null, genList=[], genPicked=new Set();
+let pane='paste', aiKind=KINDS[0], aiN=5, locN=5;
+
+const SMAP={'灵感中':'idea','进行中':'doing','已完成':'done'};
+const PMAP={'低':'low','中':'mid','高':'high'};
+function packTopics(cats){
+  const byKey={}; cats.forEach(c=>byKey[c.key]=c.id);
+  return PACK.map((x,i)=>({
+    id:uid(), title:x.t, note:x.m||'',
+    categoryId:byKey[x.c]||cats[0].id,
+    status:SMAP[x.s]||'idea', priority:PMAP[x.p]||'mid', due:'',
+    tags:(x.g||[]).slice(0,4), 
+    blocks:x.n?[{id:uid(),title:x.i.indexOf('manual')===0?'策划手册':'备注',body:x.n}]:[],
+    createdAt:now()-(PACK.length-i)*6e5, updatedAt:now()-(PACK.length-i)*6e5
+  }));
+}
+function packCategories(){
+  return PACK_CATS.map(([key,name,color])=>({id:uid(),name,color,key}));
+}
+function seed(){
+  const cats=packCategories();
+  return {v:3,theme:'auto',onboard:true,
+    ai:{provider:'openai',base:'',model:'',key:''},packImported:true,
+    categories:cats.map(c=>({id:c.id,name:c.name,color:c.color})),
+    topics:packTopics(cats)};
+}
+function importPack(silent){
+  const existing=new Set(S.topics.map(t=>t.title));
+  const ALIAS={design:['设计','品牌设计'],media:['自媒体','自媒体内容'],culture:['文创'],
+               works:['作品','个人作品'],event:['活动设计'],operation:['运营设计']};
+  const cats=PACK_CATS.map(([key,name,color])=>{
+    let c=S.categories.find(x=>(ALIAS[key]||[name]).includes(x.name));
+    if(!c){c={id:uid(),name,color};S.categories.push(c)}
+    return {key,id:c.id};
+  });
+  const added=packTopics(cats).filter(t=>!existing.has(t.title));
+  if(!added.length){if(!silent)toast('手册选题已经全部在库里了');return}
+  S.topics=added.concat(S.topics);
+  save();render();if(!silent)toast('已导入 '+added.length+' 个手册选题');
+}
+function load(){
+  try{
+    const raw=localStorage.getItem(KEY); if(!raw) return seed();
+    const d=JSON.parse(raw);
+    if(!d||!Array.isArray(d.categories)||!Array.isArray(d.topics)) return seed();
+    d.topics.forEach(t=>{t.tags=t.tags||[];t.blocks=t.blocks||[]});
+    d.ai=d.ai||{provider:'openai',base:'',model:'',key:''};
+    return d;
+  }catch(e){return seed()}
+}
+let saveTimer=null;
+function save(){
+  clearTimeout(saveTimer); $('#saveTxt').textContent='Saving…';
+  saveTimer=setTimeout(()=>{
+    try{localStorage.setItem(KEY,JSON.stringify(S));$('#saveTxt').textContent='All changes saved'}
+    catch(e){$('#saveTxt').textContent='Save failed';toast('保存失败，存储空间可能已满')}
+  },240);
+}
+
+const mq=window.matchMedia('(prefers-color-scheme: dark)');
+function applyTheme(){
+  const t=S.theme||'auto';
+  document.documentElement.dataset.theme = t==='auto' ? (mq.matches?'dark':'light') : t;
+  $$('#themeSwitch button').forEach(b=>b.classList.toggle('on',b.dataset.theme===t));
+  const dark=document.documentElement.dataset.theme==='dark';
+  document.querySelector('meta[name=theme-color]').setAttribute('content',dark?'#0C0C0D':'#EFEEE8');
+}
+mq.addEventListener('change',()=>{if((S.theme||'auto')==='auto')applyTheme()});
+$('#themeSwitch').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.theme=b.dataset.theme;applyTheme();save()});
+
+const catOf=id=>S.categories.find(c=>c.id===id);
+function fmtDate(ts){
+  const d=new Date(ts),n=new Date();
+  if(d.toDateString()===n.toDateString()) return '今天 '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+  return (d.getMonth()+1)+'月'+d.getDate()+'日';
+}
+function toast(msg){
+  const el=document.createElement('div');el.className='toast';el.textContent=msg;
+  $('#toasts').appendChild(el);
+  setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),320)},2300);
+}
+function filtered(){
+  const q=view.q.trim().toLowerCase();
+  let list=S.topics.filter(t=>{
+    if(view.cat!=='all'&&t.categoryId!==view.cat) return false;
+    if(view.status!=='all'&&t.status!==view.status) return false;
+    if(q){const hay=(t.title+' '+t.note+' '+t.tags.join(' ')+' '+(t.blocks||[]).map(b=>b.title+b.body).join(' ')).toLowerCase();
+      if(!hay.includes(q)) return false}
+    return true;
+  });
+  const s=view.sort;
+  list.sort((a,b)=> s==='created'?b.createdAt-a.createdAt
+    : s==='priority'?(PRI_N[b.priority]||0)-(PRI_N[a.priority]||0)||b.updatedAt-a.updatedAt
+    : s==='title'?a.title.localeCompare(b.title,'zh-Hans-CN') : b.updatedAt-a.updatedAt);
+  return list;
+}
+
+/* 每张卡的几何图形，按分类色轮换，不是千篇一律的矩形 */
+function shapeSVG(color,i){
+  const k=`var(--k-${color})`, s=`var(--s-${color})`;
+  const set=[
+    `<circle cx="22" cy="22" r="20" fill="${s}"/><circle cx="22" cy="22" r="9" fill="${k}"/>`,
+    `<circle cx="22" cy="22" r="19" fill="none" stroke="${k}" stroke-width="5"/>`,
+    `<path d="M2 22a20 20 0 0140 0z" fill="${k}"/><path d="M2 22a20 20 0 0040 0z" fill="${s}"/>`,
+    `<rect x="2" y="12" width="40" height="20" rx="10" fill="${s}"/><circle cx="32" cy="22" r="10" fill="${k}"/>`,
+    `<path d="M42 2v40H2C2 19.9 19.9 2 42 2z" fill="${k}"/>`,
+    `<rect x="3" y="3" width="38" height="38" rx="13" fill="${s}"/><path d="M12 22h20M22 12v20" stroke="${k}" stroke-width="5" stroke-linecap="round"/>`
+  ];
+  return `<svg class="card-shape" viewBox="0 0 44 44" fill="none">${set[i%set.length]}</svg>`;
+}
+
+function renderMosaicActive(){
+  [['#tileDoing','doing'],['#tileIdea','idea'],['#tileDone','done']]
+    .forEach(([q,st])=>{const el=$(q); if(el) el.classList.toggle('active',view.status===st)});
+}
+function render(){renderSide();renderMosaic();renderHead();renderGrid()}
+
+function renderSide(){
+  const counts={};S.topics.forEach(t=>counts[t.categoryId]=(counts[t.categoryId]||0)+1);
+  let h=`<button class="cat ${view.cat==='all'?'active':''}" data-id="all">
+    <span class="cat-dot" style="background:var(--text-3)"></span><span class="cat-name">全部选题</span>
+    <span class="cat-count">${S.topics.length}</span></button>`;
+  S.categories.forEach(c=>{
+    h+=`<button class="cat ${view.cat===c.id?'active':''}" data-id="${c.id}">
+      <span class="cat-dot" style="background:var(--k-${c.color})"></span>
+      <span class="cat-name" data-name="${c.id}">${esc(c.name)}</span>
+      <span class="cat-count">${counts[c.id]||0}</span>
+      <span class="cat-del" data-del="${c.id}" role="button" title="删除分类">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 3h8M4.8 3V2.2h2.4V3M3.4 3l.5 6.3h4.2L8.6 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span></button>`;
+  });
+  $('#catList').innerHTML=h;
+}
+
+function renderMosaic(){
+  const n={idea:0,doing:0,done:0};
+  S.topics.forEach(t=>{n[t.status]=(n[t.status]||0)+1});
+  $('#nDoing').textContent=n.doing; $('#nIdea').textContent=n.idea; $('#nDone').textContent=n.done;
+  const total=S.topics.length||1;
+  $('#tileBar').innerHTML=[['idea','--k-pink'],['doing','--k-blue'],['done','--k-green']]
+    .map(([k,v])=>`<i style="flex:${Math.max(n[k],0.12)};background:var(${v})"></i>`).join('');
+  [['#tileDoing','doing'],['#tileIdea','idea'],['#tileDone','done']]
+    .forEach(([q,st])=>$(q).classList.toggle('active',view.status===st));
+}
+
+function renderHead(){
+  renderMosaicActive();
+  const c=view.cat==='all'?null:catOf(view.cat);
+  $('#headDot').style.background=c?`var(--k-${c.color})`:'var(--text-3)';
+  $('#headLabel').textContent=c?'Category':'All ideas';
+  $('#headTitle').textContent=c?c.name:'全部选题';
+  $('#headSub').textContent=c?'这个分类下的所有想法，按最近的动作排列。':'把散落的灵感，整理成下一件值得完成的作品。';
+  $('#onboard').hidden=!S.onboard;
+  $$('#statusSeg button').forEach(b=>b.classList.toggle('on',b.dataset.s===view.status));
+  $('#sortSel').value=view.sort;
+  $('#selectBtn').textContent=sel.on?'取消选择':'选择';
+  $('#searchClear').style.display=view.q?'grid':'none';
+}
+
+function renderGrid(){
+  const list=filtered();
+  $('#countTxt').textContent=list.length+' ideas';
+  const g=$('#grid');
+  if(!list.length){
+    const searching=view.q||view.status!=='all';
+    g.innerHTML=`<div class="empty">
+      <div class="empty-ico"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M7 11h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+      <h3>${searching?'没有匹配的选题':'这里还没有选题'}</h3>
+      <p>${searching?'换个关键词，或把筛选放宽一些。':'新建一张，或用 AI 选题一次生成几条。'}</p>
+      ${searching?'<button class="btn btn-ghost btn-sm" id="resetFilter">重置筛选</button>'
+        :'<button class="btn btn-primary btn-sm" id="emptyNew">＋ 新建选题</button>'}</div>`;
+    const a=$('#emptyNew'); if(a) a.onclick=()=>createTopic();
+    const b=$('#resetFilter'); if(b) b.onclick=()=>{view.q='';view.status='all';$('#searchInput').value='';render()};
+    return;
+  }
+  g.innerHTML=list.map((t,i)=>{
+    const c=catOf(t.categoryId), st=STATUS[t.status]||STATUS.idea;
+    const col=c?c.color:'ink', pn=PRI_N[t.priority]||1;
+    return `<article class="card ${sel.on?'selmode':''} ${sel.ids.has(t.id)?'picked':''}" data-id="${t.id}"
+      style="animation-delay:${Math.min(i*30,280)}ms" tabindex="0" role="button">
+      ${shapeSVG(col,i)}
+      <span class="card-idx">${String(i+1).padStart(2,'0')}</span>
+      <h3>${esc(t.title)||'未命名选题'}</h3>
+      ${t.note?`<p>${esc(t.note)}</p>`:''}
+      <div class="tags">
+        <span class="chip" style="background:var(--s-${st.c});color:var(--k-${st.c})">${st.t}</span>
+        ${t.tags.slice(0,2).map(x=>`<span class="tag">${esc(x)}</span>`).join('')}
+        ${t.tags.length>2?`<span class="tag">+${t.tags.length-2}</span>`:''}
+      </div>
+      <div class="card-foot">
+        <span class="cat-dot" style="background:var(--k-${col})"></span>
+        <span>${c?esc(c.name):'未分类'}</span><span class="dot-sep"></span>
+        <span>${fmtDate(t.updatedAt)}</span>
+        <span class="pri" title="优先级 ${PRI[t.priority]||'中'}"><i class="on"></i><i class="${pn>1?'on':''}"></i><i class="${pn>2?'on':''}"></i></span>
+      </div>
+      ${sel.on?`<span class="pick-box"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.6l2.3 2.3L9 3.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`:''}
+    </article>`;
+  }).join('');
+  $('#bulkCount').textContent=sel.ids.size;
+  $('#bulkbar').classList.toggle('show',sel.on);
+}
+
+/* ---------- sidebar ---------- */
+$('#catList').addEventListener('click',e=>{
+  const del=e.target.closest('[data-del]');
+  if(del){e.stopPropagation();askDeleteCat(del.dataset.del);return}
+  const b=e.target.closest('.cat'); if(!b)return;
+  view.cat=b.dataset.id; closeSidebar(); render();
+});
+$('#catList').addEventListener('dblclick',e=>{
+  const n=e.target.closest('[data-name]'); if(!n)return;
+  const c=catOf(n.dataset.name); if(!c)return;
+  const inp=document.createElement('input');
+  inp.className='cat-rename';inp.value=c.name;
+  n.replaceWith(inp);inp.focus();inp.select();
+  let settled=false;
+  const done=ok=>{if(settled)return;settled=true;if(ok&&inp.value.trim()){c.name=inp.value.trim();save()}render()};
+  inp.addEventListener('blur',()=>done(true));
+  inp.addEventListener('keydown',ev=>{
+    if(ev.key==='Enter'){ev.preventDefault();inp.blur()}
+    if(ev.key==='Escape'){ev.preventDefault();ev.stopPropagation();done(false)}
+  });
+});
+function openSidebar(){$('#sidebar').classList.add('open');$('#sbScrim').classList.add('show')}
+function closeSidebar(){$('#sidebar').classList.remove('open');$('#sbScrim').classList.remove('show')}
+$('#menuBtn').onclick=openSidebar; $('#sbScrim').onclick=closeSidebar;
+
+/* ---------- toolbar ---------- */
+$('#statusSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;view.status=b.dataset.s;render()});
+$('#sortSel').addEventListener('change',e=>{view.sort=e.target.value;render()});
+let qTimer;
+$('#searchInput').addEventListener('input',e=>{clearTimeout(qTimer);qTimer=setTimeout(()=>{view.q=e.target.value;render()},120)});
+$('#searchClear').onclick=()=>{$('#searchInput').value='';view.q='';render();$('#searchInput').focus()};
+$('#onboardClose').onclick=()=>{S.onboard=false;save();$('#onboard').hidden=true};
+document.addEventListener('scroll',()=>{$('#topbar').classList.toggle('scrolled',window.scrollY>6)},{passive:true});
+
+$('#selectBtn').onclick=()=>{sel.on=!sel.on;sel.ids.clear();render()};
+$('#bulkExit').onclick=()=>{sel.on=false;sel.ids.clear();render()};
+$('#bulkAll').onclick=()=>{filtered().forEach(t=>sel.ids.add(t.id));render()};
+$('#bulkDel').onclick=()=>{
+  if(!sel.ids.size){toast('还没有选中任何选题');return}
+  pending={type:'bulk'};
+  $('#delTitle').textContent=`删除选中的 ${sel.ids.size} 个选题？`;
+  $('#delSub').textContent='删除后无法撤销，请确认已导出需要保留的备份。';
+  openModal('#mDel');
+};
+$('#grid').addEventListener('click',e=>{
+  const card=e.target.closest('.card'); if(!card)return;
+  const id=card.dataset.id;
+  if(sel.on){sel.ids.has(id)?sel.ids.delete(id):sel.ids.add(id);card.classList.toggle('picked');
+    $('#bulkCount').textContent=sel.ids.size;return}
+  openDrawer(id);
+});
+$('#grid').addEventListener('keydown',e=>{
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  const card=e.target.closest('.card'); if(!card)return;
+  e.preventDefault();card.click();
+});
+
+/* ---------- create ---------- */
+function createTopic(){
+  const cid=view.cat!=='all'?view.cat:(S.categories[0]||{}).id||'';
+  const t={id:uid(),title:'',note:'',categoryId:cid,status:'idea',priority:'mid',due:'',tags:[],blocks:[],
+    createdAt:now(),updatedAt:now()};
+  S.topics.unshift(t);save();sel.on=false;sel.ids.clear();render();openDrawer(t.id,true);
+}
+$('#newBtn').onclick=()=>createTopic();
+$('#tileNew').onclick=()=>createTopic();
+['#tileDoing','#tileIdea','#tileDone'].forEach(q=>{
+  $(q).onclick=()=>{
+    const st=$(q).dataset.st;
+    view.status = view.status===st ? 'all' : st;
+    render();
+    document.querySelector('.toolbar').scrollIntoView({behavior:'smooth',block:'start'});
+  };
+});
+
+/* ---------- drawer ---------- */
+function openDrawer(id,focus){
+  const t=S.topics.find(x=>x.id===id); if(!t)return;
+  openId=id;
+  $('#drawerBody').innerHTML=drawerHTML(t); bindDrawer(t);
+  $('#drawer').classList.add('show');$('#drawer').setAttribute('aria-hidden','false');$('#scrim').classList.add('show');
+  const ta=$('#dTitle'); autoGrow(ta); if(focus) setTimeout(()=>ta.focus(),180);
+}
+function closeDrawer(){
+  openId=null;$('#drawer').classList.remove('show');$('#drawer').setAttribute('aria-hidden','true');
+  $('#scrim').classList.remove('show');render();
+}
+$('#drawerClose').onclick=closeDrawer; $('#drawerDone').onclick=closeDrawer;
+$('#scrim').onclick=()=>{closeDrawer();closeModal()};
+$('#drawerDel').onclick=()=>{
+  pending={type:'one',id:openId};
+  $('#delTitle').textContent='删除这张选题卡？';
+  $('#delSub').textContent='此操作无法撤销，笔记和标签会一并删除。';
+  openModal('#mDel');
+};
+function drawerHTML(t){
+  return `<textarea id="dTitle" class="title-input" rows="1" placeholder="给这个想法起个名字…">${esc(t.title)}</textarea>
+  <div class="grid2">
+    <div class="field"><label>分类</label><select class="ctrl" id="dCat">${S.categories.map(c=>`<option value="${c.id}" ${c.id===t.categoryId?'selected':''}>${esc(c.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>计划时间</label><input class="ctrl" id="dDue" type="date" value="${esc(t.due)}"></div>
+  </div>
+  <div class="field"><label>状态</label><div class="seg-sm" id="dStatus">${Object.entries(STATUS).map(([k,v])=>`<button data-v="${k}" class="${t.status===k?'on':''}">${v.t}</button>`).join('')}</div></div>
+  <div class="field"><label>优先级</label><div class="seg-sm" id="dPri">${Object.entries(PRI).map(([k,v])=>`<button data-v="${k}" class="${t.priority===k?'on':''}">${v}</button>`).join('')}</div></div>
+  <div class="field"><label>标签</label><div class="tag-edit" id="dTagWrap">${t.tags.map(tagPill).join('')}<input id="dTagInput" placeholder="输入后按回车添加"></div></div>
+  <div class="field"><label>内容笔记</label><textarea class="ctrl" id="dNote" placeholder="自由记录思路、参考和下一步。">${esc(t.note)}</textarea></div>
+  <div class="field"><label>自定义区块</label><div id="dBlocks">${(t.blocks||[]).map(blockHTML).join('')}</div>
+    <button class="add-block" id="dAddBlock">＋ 添加区块</button></div>`;
+}
+const tagPill=(x,i)=>`<span class="tag-pill">${esc(x)}<button data-tag="${i}" aria-label="移除"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M1.5 1.5l6 6M7.5 1.5l-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></span>`;
+const blockHTML=b=>`<div class="block" data-b="${b.id}"><div class="block-head">
+  <input value="${esc(b.title)}" data-bt placeholder="区块标题">
+  <button class="x-btn" data-brm aria-label="删除区块"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 2l7 7M9 2l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+</div><textarea data-bb placeholder="写点什么…">${esc(b.body)}</textarea></div>`;
+function autoGrow(el){el.style.height='auto';el.style.height=el.scrollHeight+'px'}
+let flashTimer;
+function touch(t){t.updatedAt=now();save();
+  const el=$('#drawerSave'); if(!el)return; el.textContent='保存中…';
+  clearTimeout(flashTimer); flashTimer=setTimeout(()=>el.textContent='已自动保存',500)}
+function bindDrawer(t){
+  $('#drawerLabel').textContent=(catOf(t.categoryId)||{}).name||'Idea';
+  const title=$('#dTitle');
+  title.addEventListener('input',()=>{t.title=title.value.replace(/\n/g,'');autoGrow(title);touch(t)});
+  title.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('#dNote').focus()}});
+  $('#dNote').addEventListener('input',e=>{t.note=e.target.value;touch(t)});
+  $('#dCat').addEventListener('change',e=>{t.categoryId=e.target.value;touch(t);
+    $('#drawerLabel').textContent=(catOf(t.categoryId)||{}).name||'Idea'});
+  $('#dDue').addEventListener('change',e=>{t.due=e.target.value;touch(t)});
+  $('#dStatus').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+    t.status=b.dataset.v;$$('#dStatus button').forEach(x=>x.classList.toggle('on',x===b));touch(t)});
+  $('#dPri').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+    t.priority=b.dataset.v;$$('#dPri button').forEach(x=>x.classList.toggle('on',x===b));touch(t)});
+  const tagInput=$('#dTagInput');
+  const redrawTags=()=>{$$('#dTagWrap .tag-pill').forEach(p=>p.remove());
+    tagInput.insertAdjacentHTML('beforebegin',t.tags.map(tagPill).join(''))};
+  tagInput.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){e.preventDefault();
+      const v=tagInput.value.trim().replace(/^#/,'');
+      if(v&&!t.tags.includes(v)){t.tags.push(v);redrawTags();touch(t)}
+      tagInput.value=''}
+    else if(e.key==='Backspace'&&!tagInput.value&&t.tags.length){t.tags.pop();redrawTags();touch(t)}
+  });
+  $('#dTagWrap').addEventListener('click',e=>{const b=e.target.closest('[data-tag]');if(!b)return;
+    t.tags.splice(+b.dataset.tag,1);redrawTags();touch(t)});
+  $('#dAddBlock').onclick=()=>{
+    const b={id:uid(),title:'',body:''};t.blocks.push(b);
+    $('#dBlocks').insertAdjacentHTML('beforeend',blockHTML(b));touch(t);
+    $('#dBlocks').lastElementChild.querySelector('[data-bt]').focus()};
+  $('#dBlocks').addEventListener('input',e=>{
+    const wrap=e.target.closest('[data-b]');if(!wrap)return;
+    const b=t.blocks.find(x=>x.id===wrap.dataset.b);if(!b)return;
+    if(e.target.hasAttribute('data-bt'))b.title=e.target.value;
+    if(e.target.hasAttribute('data-bb'))b.body=e.target.value;
+    touch(t)});
+  $('#dBlocks').addEventListener('click',e=>{
+    const rm=e.target.closest('[data-brm]');if(!rm)return;
+    const wrap=rm.closest('[data-b]');t.blocks=t.blocks.filter(x=>x.id!==wrap.dataset.b);wrap.remove();touch(t)});
+}
+
+/* ---------- modal plumbing ---------- */
+let modalOpen=null;
+function openModal(q){closeModal();modalOpen=$(q);modalOpen.classList.add('show');$('#scrim').classList.add('show')}
+function closeModal(){
+  if(modalOpen){modalOpen.classList.remove('show');modalOpen=null}
+  if(!$('#drawer').classList.contains('show'))$('#scrim').classList.remove('show');
+}
+document.addEventListener('click',e=>{if(e.target.closest('[data-close]'))closeModal()});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if(modalOpen)closeModal();
+    else if($('#drawer').classList.contains('show'))closeDrawer();
+    else if(sel.on){sel.on=false;sel.ids.clear();render()}
+  }
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#searchInput').focus();$('#searchInput').select()}
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='j'){e.preventDefault();createTopic()}
+});
+$('#delOk').onclick=()=>{
+  if(!pending)return;
+  if(pending.type==='one'){S.topics=S.topics.filter(t=>t.id!==pending.id);closeDrawer();toast('已删除 1 个选题')}
+  else{const n=sel.ids.size;S.topics=S.topics.filter(t=>!sel.ids.has(t.id));sel.on=false;sel.ids.clear();toast(`已删除 ${n} 个选题`)}
+  pending=null;save();closeModal();render();
+};
+
+/* ---------- categories ---------- */
+let newColor=COLORS[0];
+$('#catSwatches').innerHTML=COLORS.map(c=>`<button class="swatch" data-c="${c}" style="background:var(--k-${c})"></button>`).join('');
+function syncSwatch(){$$('#catSwatches .swatch').forEach(b=>b.classList.toggle('on',b.dataset.c===newColor))}
+$('#catSwatches').addEventListener('click',e=>{const b=e.target.closest('.swatch');if(!b)return;newColor=b.dataset.c;syncSwatch()});
+$('#addCatBtn').onclick=()=>{newColor=COLORS[S.categories.length%COLORS.length];syncSwatch();
+  $('#catName').value='';openModal('#mCat');setTimeout(()=>$('#catName').focus(),200)};
+$('#catName').addEventListener('keydown',e=>{if(e.key==='Enter')$('#catSave').click()});
+$('#catSave').onclick=()=>{
+  const name=$('#catName').value.trim();
+  if(!name){toast('请先填写分类名称');$('#catName').focus();return}
+  const c={id:uid(),name,color:newColor};S.categories.push(c);save();closeModal();view.cat=c.id;render();toast('分类已添加');
+};
+let delCatId=null;
+function askDeleteCat(id){
+  const c=catOf(id);if(!c)return;
+  if(S.categories.length<=1){toast('至少保留一个分类');return}
+  delCatId=id;$('#catDelTitle').textContent=`删除「${c.name}」？`;
+  $('#catMoveTo').innerHTML=S.categories.filter(x=>x.id!==id).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('');
+  openModal('#mCatDel');
+}
+$('#catDelOk').onclick=()=>{
+  const to=$('#catMoveTo').value;
+  S.topics.forEach(t=>{if(t.categoryId===delCatId)t.categoryId=to});
+  S.categories=S.categories.filter(c=>c.id!==delCatId);
+  if(view.cat===delCatId)view.cat='all';
+  delCatId=null;save();closeModal();render();toast('分类已删除，选题已转移');
+};
+
+/* ---------- storage / io ---------- */
+$('#storageBtn').onclick=()=>{$('#storeOrigin').textContent=location.host||'本地文件';openModal('#mStore')};
+$('#storeExport').onclick=()=>{doExport();closeModal()};
+function doExport(){
+  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`orbit-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();
+  URL.revokeObjectURL(a.href);toast('备份已导出');
+}
+$('#exportBtn').onclick=doExport;
+$('#importBtn').onclick=()=>$('#fileInput').click();
+$('#fileInput').addEventListener('change',e=>{
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{
+    const d=JSON.parse(r.result);
+    if(!d||!Array.isArray(d.categories)||!Array.isArray(d.topics))throw 0;
+    d.topics.forEach(t=>{t.tags=t.tags||[];t.blocks=t.blocks||[]});
+    d.ai=d.ai||S.ai; S=d;S.theme=S.theme||'auto';view.cat='all';
+    applyTheme();save();render();toast(`已导入 ${d.topics.length} 个选题`);
+  }catch(err){toast('文件格式不正确，导入失败')}};
+  r.readAsText(f);e.target.value='';
+});
+
+/* ---------- API 设置 ---------- */
+const PRESET={openai:{base:'https://api.openai.com/v1',model:'gpt-4o-mini'},
+              anthropic:{base:'https://api.anthropic.com/v1',model:'claude-sonnet-4-5'},
+              custom:{base:'',model:''}};
+function syncProv(){$$('#apiProv button').forEach(b=>b.classList.toggle('on',b.dataset.v===S.ai.provider))}
+$('#apiProv').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  S.ai.provider=b.dataset.v;syncProv();
+  const p=PRESET[S.ai.provider];
+  $('#apiBase').value=p.base;$('#apiModel').value=p.model;
+  $('#apiBase').placeholder=p.base||'https://your-endpoint/v1';
+  $('#apiModel').placeholder=p.model||'model-name';
+});
+$('#apiBtn').onclick=openApi;
+function openApi(){
+  syncProv();
+  const p=PRESET[S.ai.provider]||PRESET.openai;
+  $('#apiBase').value=S.ai.base||p.base; $('#apiModel').value=S.ai.model||p.model; $('#apiKey').value=S.ai.key||'';
+  openModal('#mApi');
+}
+$('#apiSave').onclick=()=>{
+  const p=PRESET[S.ai.provider]||PRESET.openai;
+  S.ai.base=($('#apiBase').value.trim()||p.base).replace(/\/+$/,'');
+  S.ai.model=$('#apiModel').value.trim()||p.model;
+  S.ai.key=$('#apiKey').value.trim();
+  save();closeModal();updateAiHint();toast(S.ai.key?'已保存，AI 生成可用了':'已清空 Key');
+};
+$('#apiClear').onclick=()=>{S.ai={provider:'openai',base:'',model:'',key:''};save();$('#apiKey').value='';
+  openApi();updateAiHint();toast('已清除 API 设置')};
+const aiReady=()=>!!(S.ai&&S.ai.key);
+function updateAiHint(){
+  const h=$('#aiHint');
+  h.innerHTML=aiReady()
+    ? `<span>已连接 ${esc(S.ai.provider==='anthropic'?'Claude':S.ai.provider==='openai'?'OpenAI':'兼容接口')} · ${esc(S.ai.model||'默认模型')}</span><button id="aiCfg">修改</button>`
+    : `<span>还没接入模型，接上后这里会直接调用它出选题。</span><button id="aiCfg">去配置</button>`;
+  const b=$('#aiCfg'); if(b) b.onclick=openApi;
+}
+
+/* ---------- 粘贴整理 ---------- */
+function parsePaste(raw){
+  const text=String(raw||'').replace(/\r/g,'');
+  if(!text.trim()) return [];
+  const lines=text.split('\n');
+  const items=[]; let cur=null;
+  const isHead=l=>/^\s*(#{1,6}\s+|\d+[.、)]\s*|[-*•]\s+|第[一二三四五六七八九十]+[、.]\s*)/.test(l);
+  const clean=l=>l.replace(/^\s*(#{1,6}\s+|\d+[.、)]\s*|[-*•]\s+|第[一二三四五六七八九十]+[、.]\s*)/,'')
+                  .replace(/\*\*/g,'').replace(/^(标题|选题|主题)\s*[:：]\s*/,'').trim();
+  lines.forEach(l=>{
+    if(!l.trim()){ if(cur&&cur.title) cur=null; return }
+    if(isHead(l)||!cur){
+      const title=clean(l);
+      if(!title) return;
+      cur={title,note:'',tags:[]}; items.push(cur);
+    }else{
+      const t=l.replace(/^\s*(描述|说明|思路|内容)\s*[:：]\s*/,'').replace(/\*\*/g,'').trim();
+      if(t) cur.note=(cur.note?cur.note+' ':'')+t;
+    }
+  });
+  return items.map(it=>{
+    const tags=[];
+    const grab=s=>s.replace(/#([^\s#，,。]{1,12})/g,(m,p)=>{tags.push(p);return ''})
+                   .replace(/[【\[]([^】\]]{1,12})[】\]]/g,(m,p)=>{tags.push(p);return ''});
+    it.title=grab(it.title).replace(/\s{2,}/g,' ').trim();
+    it.note=grab(it.note).replace(/\s{2,}/g,' ').trim();
+    it.tags=[...new Set(tags)].slice(0,4);
+    return it;
+  }).filter(it=>it.title&&it.title.length<=80).slice(0,60);
+}
+
+/* ---------- 本地模板 ---------- */
+const ANGLES=[
+  ['把{T}拆成一套可复用的方法','整理自己的流程，做成别人能照着用的步骤清单。',['方法论']],
+  ['用一周时间记录{T}的真实过程','不修饰地呈现从卡住到想通，过程本身就是内容。',['过程记录']],
+  ['给{T}做一次小规模实验','定一个很小的限制条件，看能逼出什么不一样的结果。',['实验']],
+  ['采访三个做{T}的人','不同阶段的人回答同样的问题，差异就是选题。',['访谈']],
+  ['{T}里最常见的三个误解','先立靶子再拆解，观点清楚的内容更容易被记住。',['观点']],
+  ['把{T}做成一份可视化清单','信息密度高、可收藏，适合长期带来自然流量。',['清单']],
+  ['一个关于{T}的失败案例复盘','坦诚讲清楚哪里做错了，比成功案例更有说服力。',['复盘']],
+  ['{T}的新手版 vs 进阶版对比','同一件事做两遍，对比本身就是最直接的表达。',['对比']],
+  ['为{T}设计一个可参与的小活动','让看的人能动手，内容就会自己传播。',['活动']],
+  ['收集{T}领域里被忽略的细节','把别人不注意的地方放大，容易形成个人风格。',['观察']],
+  ['用一个月把{T}做成系列','固定格式、固定节奏，系列比单篇更容易被记住。',['系列']],
+  ['{T}的工具与成本清单','把真实花费和取舍写清楚，实用型内容长尾很长。',['工具']]
+];
+function buildLocal(topic,plat,n){
+  const T=topic.trim()||'这个方向';
+  return [...ANGLES].sort(()=>Math.random()-.5).slice(0,n).map(([tpl,note,tags])=>({
+    title:tpl.replace('{T}',T),
+    note:note+(plat.trim()?`适合放在${plat.trim()}。`:''),
+    tags:[...tags,...(plat.trim()?[plat.trim()]:[])]
+  }));
+}
+
+/* ---------- 真·AI 调用 ---------- */
+async function callModel(prompt){
+  const a=S.ai, base=(a.base||PRESET[a.provider].base).replace(/\/+$/,'');
+  if(a.provider==='anthropic'){
+    const r=await fetch(base+'/messages',{method:'POST',
+      headers:{'content-type':'application/json','x-api-key':a.key,'anthropic-version':'2023-06-01',
+               'anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:a.model||PRESET.anthropic.model,max_tokens:2000,
+        messages:[{role:'user',content:prompt}]})});
+    if(!r.ok) throw new Error(await r.text().catch(()=>r.status));
+    const j=await r.json();
+    return (j.content||[]).map(c=>c.text||'').join('');
+  }
+  const r=await fetch(base+'/chat/completions',{method:'POST',
+    headers:{'content-type':'application/json','authorization':'Bearer '+a.key},
+    body:JSON.stringify({model:a.model||PRESET.openai.model,temperature:.9,
+      messages:[{role:'system',content:'你是资深设计师与内容策划，只输出 JSON。'},{role:'user',content:prompt}]})});
+  if(!r.ok) throw new Error(await r.text().catch(()=>r.status));
+  const j=await r.json();
+  return j.choices?.[0]?.message?.content||'';
+}
+function buildPrompt(kind,topic,plat,n){
+  return `你是一名资深${kind}方向的创意策划。请为下面的方向产出 ${n} 个具体、可执行、不空泛的选题。
+方向：${topic}
+${plat?`投放平台或场景：${plat}`:''}
+要求：
+1. 每条标题不超过 20 个中文字，具体到能直接开工，避免"浅谈""探索"这类空词。
+2. note 用一句话说明切入角度和为什么值得做，不超过 45 字。
+3. tags 给 2-3 个短标签。
+4. ${n} 条之间角度要明显不同，不要同义重复。
+只输出 JSON 数组，不要任何解释或代码块标记，格式：
+[{"title":"","note":"","tags":["",""]}]`;
+}
+function parseModelJSON(txt){
+  let s=String(txt||'').trim().replace(/^```(json)?/i,'').replace(/```$/,'').trim();
+  const a=s.indexOf('['), b=s.lastIndexOf(']');
+  if(a>=0&&b>a) s=s.slice(a,b+1);
+  const arr=JSON.parse(s);
+  if(!Array.isArray(arr)) throw new Error('not array');
+  return arr.filter(x=>x&&x.title).map(x=>({
+    title:String(x.title).slice(0,80),
+    note:String(x.note||'').slice(0,160),
+    tags:(Array.isArray(x.tags)?x.tags:[]).map(t=>String(t).slice(0,12)).slice(0,4)
+  }));
+}
+
+/* ---------- 生成面板 ---------- */
+function fillCats(){
+  const opts=S.categories.map(c=>`<option value="${c.id}" ${c.id===view.cat?'selected':''}>${esc(c.name)}</option>`).join('');
+  ['#pasteCat','#aiCat','#locCat'].forEach(q=>$(q).innerHTML=opts);
+}
+$('#kindRow').innerHTML=KINDS.map(k=>`<button class="kind" data-k="${k}">${k}</button>`).join('');
+function syncKind(){$$('#kindRow .kind').forEach(b=>b.classList.toggle('on',b.dataset.k===aiKind))}
+$('#kindRow').addEventListener('click',e=>{const b=e.target.closest('.kind');if(!b)return;aiKind=b.dataset.k;syncKind()});
+function syncCount(){
+  $$('#aiCount button').forEach(b=>b.classList.toggle('on',+b.dataset.n===aiN));
+  $$('#locCount button').forEach(b=>b.classList.toggle('on',+b.dataset.n===locN));
+}
+$('#aiCount').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;aiN=+b.dataset.n;syncCount()});
+$('#locCount').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;locN=+b.dataset.n;syncCount()});
+function setPane(p){
+  pane=p;
+  $$('#genTabs button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+  $('#panePaste').classList.toggle('on',p==='paste');
+  $('#paneAi').classList.toggle('on',p==='ai');
+  $('#paneLocal').classList.toggle('on',p==='local');
+  $('#genRun').style.display = p==='paste' ? 'none' : '';
+  $('#genTitle').textContent = p==='paste'?'把 AI 的回答变成卡片' : p==='ai'?'让模型直接出选题':'离线角度模板';
+}
+$('#genTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setPane(b.dataset.p)});
+$('#tileAi').onclick=()=>{
+  fillCats();syncKind();syncCount();updateAiHint();setPane('paste');
+  genList=[];genPicked.clear();$('#genResults').innerHTML='<p class="gen-empty">结果会出现在这里</p>';
+  $('#aiErr').innerHTML='';
+  openModal('#mGen');setTimeout(()=>$('#pasteBox').focus(),200);
+};
+function showResults(list){
+  genList=list;genPicked=new Set(list.map((_,i)=>i));
+  $('#genResults').innerHTML=list.length?list.map((g,i)=>`
+    <button class="gen-item on" data-i="${i}" style="animation-delay:${i*40}ms">
+      <span class="gen-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.8 5.2l2 2L8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span><strong>${esc(g.title)}</strong>${g.note?`<p>${esc(g.note)}</p>`:''}
+      <span class="tags">${(g.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</span></span>
+    </button>`).join('') : '<p class="gen-empty">没能识别出可用的选题，换个格式再试试</p>';
+}
+$('#genResults').addEventListener('click',e=>{
+  const b=e.target.closest('.gen-item');if(!b)return;
+  const i=+b.dataset.i;genPicked.has(i)?genPicked.delete(i):genPicked.add(i);b.classList.toggle('on');
+});
+$('#pasteRun').onclick=()=>{
+  const list=parsePaste($('#pasteBox').value);
+  if(!list.length){toast('没识别到内容，检查一下粘贴的文本');return}
+  showResults(list);toast(`识别出 ${list.length} 条，勾选后存入`);
+};
+$('#genRun').onclick=async()=>{
+  const btn=$('#genRun'); $('#aiErr').innerHTML='';
+  if(pane==='local'){
+    const topic=$('#locTopic').value;
+    if(!topic.trim()){toast('先写一下你的方向');$('#locTopic').focus();return}
+    showResults(buildLocal(topic,$('#locPlat').value,locN));return;
+  }
+  const topic=$('#aiTopic').value.trim();
+  if(!topic){toast('先写一下你的方向');$('#aiTopic').focus();return}
+  if(!aiReady()){openApi();return}
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span> 生成中';
+  $('#genResults').innerHTML='<p class="gen-empty">模型正在思考…</p>';
+  try{
+    const raw=await callModel(buildPrompt(aiKind,topic,$('#aiPlat').value.trim(),aiN));
+    showResults(parseModelJSON(raw));
+  }catch(err){
+    $('#genResults').innerHTML='<p class="gen-empty">生成失败</p>';
+    const msg=String(err&&err.message||err).slice(0,220);
+    $('#aiErr').innerHTML=`<div class="err">调用失败：${esc(msg)}<br>检查 Key、模型名和接口地址；若浏览器报跨域，说明该接口不允许前端直连。</div>`;
+  }finally{btn.disabled=false;btn.textContent='重新生成'}
+};
+$('#genSave').onclick=()=>{
+  if(!genList.length){toast('先生成或整理出选题');return}
+  if(!genPicked.size){toast('至少勾选一条');return}
+  const cid=(pane==='paste'?$('#pasteCat'):pane==='ai'?$('#aiCat'):$('#locCat')).value||(S.categories[0]||{}).id;
+  [...genPicked].sort((a,b)=>a-b).forEach(i=>{
+    const g=genList[i];
+    S.topics.unshift({id:uid(),title:g.title,note:g.note||'',categoryId:cid,status:'idea',priority:'mid',due:'',
+      tags:g.tags||[],blocks:[],createdAt:now(),updatedAt:now()});
+  });
+  const n=genPicked.size;genList=[];genPicked.clear();
+  $('#genResults').innerHTML='<p class="gen-empty">结果会出现在这里</p>';
+  $('#pasteBox').value='';$('#genRun').textContent='开始生成';
+  save();closeModal();view.cat=cid;render();toast(`已存入 ${n} 个选题`);
+};
+
+if(!S.packImported){S.packImported=true;importPack(true)}
+applyTheme();render();updateAiHint();save();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+# ORBIT 是纯静态单文件应用，无需构建
+[build]
+  publish = "."
+  command = ""
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
